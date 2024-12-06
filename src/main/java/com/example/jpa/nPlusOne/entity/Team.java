@@ -21,7 +21,6 @@ public class Team {
     private String name;
 
     @OneToMany(mappedBy = "team") // ~ToMany: LAZY
-    @JoinColumn(name = "member_id") // 외래 키(팀)를 관리하는 측(멤버)에게 부여
     private List<Member> members = new ArrayList<>();
 
     public Team(String name) {

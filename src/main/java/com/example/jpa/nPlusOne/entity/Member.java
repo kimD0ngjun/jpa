@@ -20,6 +20,7 @@ public class Member {
     private String name;
 
     @ManyToOne // ~ToOne: EAGER
+    @JoinColumn(name = "team_id") // 외래 키(팀)를 관리하는 측(멤버)에게 부여
     private Team team;   // 부모 : 자식 = 1 :
 
     public Member(String name) {
