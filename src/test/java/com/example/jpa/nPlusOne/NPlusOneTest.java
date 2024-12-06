@@ -3,6 +3,7 @@ package com.example.jpa.nPlusOne;
 import com.example.jpa.nPlusOne.entity.Member;
 import com.example.jpa.nPlusOne.entity.Team;
 import com.example.jpa.nPlusOne.repository.TeamRepository;
+import com.example.jpa.nPlusOne.service.TeamMemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +16,7 @@ import java.util.List;
 public class NPlusOneTest {
 
     @Autowired
-    private TeamRepository teamRepository;
+    private TeamMemberService teamMemberService;
 
 //    @DisplayName("팀 엔티티 생성 및 멤버 엔티티 생성과 연관관계 세팅")
 //    @BeforeEach
@@ -51,19 +52,12 @@ public class NPlusOneTest {
     @DisplayName("N+1 문제 테스트: 전체 팀 멤버 조회")
     @Test
     void testNPlusOneAllMembers() {
-        List<String> list = teamRepository.findAll().stream()
-                .flatMap(team -> team.getMembers().stream())
-                .map(Member::getName)
-                .toList();
+        teamMemberService.findAllMembers();
     }
 
     @DisplayName("N+1 문제 테스트: 특정 팀 멤버 조회")
     @Test
     void testNPlusOneParticularMembers() {
-        Team team = teamRepository.findById(1L).orElseThrow();
-
-        List<String> list = team.getMembers().stream()
-                .map(Member::getName)
-                .toList();
+        teamMemberService.findParticularMembers();
     }
 }
