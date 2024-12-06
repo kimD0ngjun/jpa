@@ -60,4 +60,10 @@ public class NPlusOneTest {
     void testNPlusOneParticularMembers() {
         teamMemberService.findParticularMembers();
     }
+
+    @DisplayName("Fetch 시점 비교용 임시 테스트")
+    @Test
+    void testFetchTime() {
+        teamMemberService.findAllTeams();
+    }
 }

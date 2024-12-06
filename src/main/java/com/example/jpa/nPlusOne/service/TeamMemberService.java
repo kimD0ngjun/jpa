@@ -15,6 +15,9 @@ import java.util.List;
 public class TeamMemberService {
     private final TeamRepository teamRepository;
 
+    /**
+     * one query(select team from team) + N query(select member from member where~)
+     */
     public void findAllMembers() {
         List<String> list = teamRepository.findAll().stream()
                 .flatMap(team -> team.getMembers().stream())
@@ -22,6 +25,13 @@ public class TeamMemberService {
                 .toList();
     }
 
+    public void findAllTeams() {
+        teamRepository.findAll();
+    }
+
+    /**
+     * one query(select team from team) + N query(select member from member where~)
+     */
     public void findParticularMembers() {
         Team team = teamRepository.findById(1L).orElseThrow();
 

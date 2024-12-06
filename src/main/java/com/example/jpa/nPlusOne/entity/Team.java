@@ -20,6 +20,9 @@ public class Team {
     @Column(name = "team_name")
     private String name;
 
+    /**
+     * , fetch = FetchType.EAGER : 모든 데이터 한번에 조회
+     */
     @OneToMany(mappedBy = "team") // ~ToMany: LAZY
     private List<Member> members = new ArrayList<>();
 
