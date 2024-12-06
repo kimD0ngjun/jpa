@@ -6,24 +6,20 @@ import com.example.jpa.nPlusOne.repository.MemberRepository;
 import com.example.jpa.nPlusOne.repository.TeamRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @SpringBootTest
-@RequiredArgsConstructor
 public class nPlusOneTest {
 
     @Autowired
-    private final EntityManager entityManager;
+    private TeamRepository teamRepository;
 
     @Autowired
-    private final TeamRepository teamRepository;
-
-    @Autowired
-    private final MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @DisplayName("팀 엔티티 생성 및 멤버 엔티티 생성과 연관관계 세팅")
     @BeforeEach
@@ -54,8 +50,6 @@ public class nPlusOneTest {
             teamC.addMember(member);
             memberRepository.save(member);
         }
-
-        entityManager.clear();
     }
 
     @DisplayName("팀 저장소 삭제 및 멤버 저장소 삭제")
@@ -63,9 +57,11 @@ public class nPlusOneTest {
     void tearDown() {
         teamRepository.deleteAll();
         memberRepository.deleteAll();
-
-        entityManager.clear();
     }
 
-
+    @Test
+    void testSelect() {
+        List<Team> teams = teamRepository.findAll();
+        Assertions.assertFalse(teams.isEmpty());
+    }
 }
