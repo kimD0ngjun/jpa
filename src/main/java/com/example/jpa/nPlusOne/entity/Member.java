@@ -19,7 +19,6 @@ public class Member {
     @Column(name = "member_name")
     private String name;
 
-    @Setter
     @ManyToOne // ~ToOne: EAGER
     private Team team;   // 부모 : 자식 = 1 :
 
