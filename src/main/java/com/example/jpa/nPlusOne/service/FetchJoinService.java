@@ -16,7 +16,7 @@ import java.util.List;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class SolutionService {
+public class FetchJoinService {
 
     private final TeamRepository teamRepository;
     private final TeamJdbcRepository teamJdbcRepository;
@@ -50,15 +50,6 @@ public class SolutionService {
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Order.asc("name")));
         Page<Team> page = teamRepository.findAllWithMembers(pageable);
         List<String> list = page.getContent().stream()
-                .flatMap(team -> team.getMembers().stream()
-                        .map(member -> team.getName() + ": " + member.getName()))
-                .toList();
-
-        System.out.println("결과: " + list);;
-    }
-
-    public void findAllMembersWithEntityGraph() {
-        List<String> list = teamRepository.findAll().stream()
                 .flatMap(team -> team.getMembers().stream()
                         .map(member -> team.getName() + ": " + member.getName()))
                 .toList();
