@@ -6,6 +6,7 @@ import com.example.jpa.nPlusOne.entity.C;
 import com.example.jpa.nPlusOne.repository.ARepository;
 import com.example.jpa.nPlusOne.repository.BRepository;
 import com.example.jpa.nPlusOne.repository.CRepository;
+import com.example.jpa.nPlusOne.service.AService;
 import com.example.jpa.nPlusOne.service.TeamMemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class NPlusOneTest {
 
     @Autowired
     private TeamMemberService teamMemberService;
+
+    @Autowired
+    private AService aService;
 
 //    @Autowired
 //    private ARepository aRepository;
@@ -131,5 +135,11 @@ public class NPlusOneTest {
     @Test
     void testFetchTime() {
         teamMemberService.findAllTeams();
+    }
+
+    @DisplayName("복수의 연관관계 N+1 문제 확인")
+    @Test
+    void testMultiNPlusOne() {
+        aService.findAllBC();
     }
 }
