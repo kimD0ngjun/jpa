@@ -27,4 +27,17 @@ public class AService {
 
         System.out.println("결과: " + list);
     }
+
+    public void findAllBCWithFetchJoin() {
+        List<String> list = aRepository.findAllWithBAndC().stream()
+                .flatMap(a -> {
+                    Stream<String> bStream = a.getBList()
+                            .stream().map(b -> a.getName() + b.getName());
+                    Stream<String> cStream = a.getCList()
+                            .stream().map(c -> a.getName() + c.getName());
+                    return Stream.concat(bStream, cStream);
+                }).toList();
+
+        System.out.println("결과: " + list);
+    }
 }
