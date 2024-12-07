@@ -1,17 +1,34 @@
 package com.example.jpa.nPlusOne;
 
+import com.example.jpa.nPlusOne.entity.A;
+import com.example.jpa.nPlusOne.entity.B;
+import com.example.jpa.nPlusOne.entity.C;
+import com.example.jpa.nPlusOne.repository.ARepository;
+import com.example.jpa.nPlusOne.repository.BRepository;
+import com.example.jpa.nPlusOne.repository.CRepository;
 import com.example.jpa.nPlusOne.service.TeamMemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
+//@Rollback(false)
 public class NPlusOneTest {
 
     @Autowired
     private TeamMemberService teamMemberService;
+
+//    @Autowired
+//    private ARepository aRepository;
+//
+//    @Autowired
+//    private BRepository bRepository;
+//
+//    @Autowired
+//    private CRepository cRepository;
 
 //    @DisplayName("팀 엔티티 생성 및 멤버 엔티티 생성과 연관관계 세팅")
 //    @BeforeEach
@@ -44,7 +61,53 @@ public class NPlusOneTest {
 //        }
 //    }
 
-
+//    @Test
+//    void setUp() {
+//        A a1 = new A("a1");
+//        aRepository.save(a1);
+//
+//        for (int i = 1; i <= 10; i++) {
+//            if (i <= 5) {
+//                B b = new B("b" + i);
+//                bRepository.save(b);
+//                a1.addB(b);
+//            } else {
+//                C c = new C("c" + i);
+//                cRepository.save(c);
+//                a1.addC(c);
+//            }
+//        }
+//
+//        A a2 = new A("a2");
+//        aRepository.save(a2);
+//
+//        for (int i = 11; i <= 20; i++) {
+//            if (i <= 15) {
+//                B b = new B("b" + i);
+//                bRepository.save(b);
+//                a2.addB(b);
+//            } else {
+//                C c = new C("c" + i);
+//                cRepository.save(c);
+//                a2.addC(c);
+//            }
+//        }
+//
+//        A a3 = new A("a3");
+//        aRepository.save(a3);
+//
+//        for (int i = 21; i <= 30; i++) {
+//            if (i <= 25) {
+//                B b = new B("b" + i);
+//                bRepository.save(b);
+//                a3.addB(b);
+//            } else {
+//                C c = new C("c" + i);
+//                cRepository.save(c);
+//                a3.addC(c);
+//            }
+//        }
+//    }
 
     @DisplayName("N+1 문제 테스트: 전체 팀 멤버 조회 by 팀 레포")
     @Test
