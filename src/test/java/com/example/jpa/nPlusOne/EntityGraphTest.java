@@ -34,6 +34,8 @@ public class EntityGraphTest {
     @DisplayName("EntityGraph 기반 다중 연관관계 N+1 확인")
     @Test
     void testABCEntityGraph() {
+//        aService.findAllBCWithEntityGraph();
+
         Assertions.assertThrows(
                 InvalidDataAccessApiUsageException.class, // 반환하는 예외 클래스를 작성해야 함
                 () -> aService.findAllBCWithEntityGraph()

@@ -385,6 +385,8 @@ List<A> findAllWithBAndC();
 
 ### 4) EntityGraph
 
+#### (1) 적용
+
 N+1 문제를 해결할 수 있는 다른 방법으로 `@EntityGraph` 어노테이션이 있다. 코드와 실행 결과를 확인해보자.
 
 ```java
@@ -398,3 +400,19 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 <img width="954" alt="entitygraph" src="https://github.com/user-attachments/assets/1fa65bf3-9180-4fb1-a6db-12696d6932d2">
 
 `@EntityGraph`의 경우 페치 타입을 Eager로 변환, 즉 즉시 로딩하는 방식으로 `outer left join`을 수행하여 데이터를 가져오지만, `Fetch Join`의 경우 따로 `outer join`으로 명시하지 않는 경우 `inner join`을 수행한다는 점에서 차이가 있다.
+
+
+### (3) 복수의 1:N 관계에서는 사용 불가
+
+다만 이것 역시 복수의 1:N 관계에서 사용할 수는 없다.
+
+```java
+@Repository
+public interface ARepository extends JpaRepository<A,Long> {
+    @EntityGraph(attributePaths = {"bList", "cList"})
+    List<A> findAll();
+}
+```
+
+<img width="985" alt="복수의일대다는엔티티그래프도불가능" src="https://github.com/user-attachments/assets/36e1f16f-6862-4ca1-8f4d-529e95a07bdf">
+
