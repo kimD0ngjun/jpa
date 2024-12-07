@@ -362,10 +362,39 @@ HHH90003004: firstResult/maxResults specified with collection fetch; applying in
 
 페이징 사이즈가 부모 엔티티의 개수와 같거나 작을 경우, Hibernate는 페이징 논리에 따라 `COUNT` 쿼리 + 데이터 조회 쿼리를 실행하게 된다. 그렇기에 굳이굳이 페이징을 사용한다면 부모 엔티티의 개수를 초과해서 페이징 사이즈를 정해야겠다만 원칙적으로 아웃 오브 메모리 예외가 발생할 수 있으니 권유하지 않는 것이다.
 
+#### (4) 복수의 1:N 관계에서는 사용 불가
+
+엔티티 `A`가 엔티티 `B`와 1:N 관계를 맺고, 엔티티 `A`가 엔티티 `C`와 1:N 관계를 맺는다. 여기서 `A` 부모 엔티티를 기반으로 그냥 반환하면 당연히 N+1 문제가 발생하게 된다.
+
+<img width="963" alt="복수일대다관계문제발생" src="https://github.com/user-attachments/assets/bc0182f9-17fb-4098-b4a9-39a7761a1e3f">
+
+이런 경우에도 JPQL의 `Fetch Join`을 여러 번 활용하면 되겠다고 생각할 수 있지만, 복수의 1:N 관계가 맺어진 부모 엔티티에 대하여 사용할 경우 예외를 반환하게 된다.
+
+```java
+@Query("SELECT a FROM A a " +
+        "LEFT JOIN FETCH a.bList b " +   // A와 B를 FetchJoin
+        "LEFT JOIN FETCH a.cList c")     // A와 C를 FetchJoin
+List<A> findAllWithBAndC();
+```
+
+<img width="956" alt="복수의1대다관계의페치조인은사용불가" src="https://github.com/user-attachments/assets/c4c936ac-746c-45fb-b8a7-f8368e12528a">
+
+위의 사진처럼 JPA가 내부적으로 `MultipleBagFetchException`을 감싸서 `InvalidDataAccessApiUsageException`으로 변환하게 된다. 즉, 래퍼 예외를 반환시킨다. Hibernate가 두 개 이상의 컬렉션(`bList`, `cList`)을 동시에 조인하려고 하면 중복된 결과가 생성될 수 있어서 이를 일부러 막는 것이다.
+
+결국 `Fetch Join`이 N+1 문제의 완벽한 대응책은 아니다.
+
 ### 4) EntityGraph
 
-N+1 문제를 해결할 수 있는 다른 방법으로 `@EntityGraph` 어노테이션이 있다.
+N+1 문제를 해결할 수 있는 다른 방법으로 `@EntityGraph` 어노테이션이 있다. 코드와 실행 결과를 확인해보자.
 
-
+```java
+@Repository
+public interface TeamRepository extends JpaRepository<Team, Long> {
+    @EntityGraph(attributePaths = "members") // 함께 조회하려는 연관관계 필드 명시
+    List<Team> findAll();
+}
+```
 
 <img width="954" alt="entitygraph" src="https://github.com/user-attachments/assets/1fa65bf3-9180-4fb1-a6db-12696d6932d2">
+
+`@EntityGraph`의 경우 페치 타입을 Eager로 변환, 즉 즉시 로딩하는 방식으로 `outer left join`을 수행하여 데이터를 가져오지만, `Fetch Join`의 경우 따로 `outer join`으로 명시하지 않는 경우 `inner join`을 수행한다는 점에서 차이가 있다.
