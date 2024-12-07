@@ -11,17 +11,11 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @NamedEntityGraph(
-        name = "OneTwoThreeGraph", // 그래프 이름
-        attributeNodes = {
-                @NamedAttributeNode(value = "twoList", subgraph = "two-to-three") // One → Two
-        },
+        name = "graph.One",
+        attributeNodes = @NamedAttributeNode(value = "twoList", subgraph = "subgraph.two"),
         subgraphs = {
-                @NamedSubgraph(
-                        name = "two-to-three",
-                        attributeNodes = {
-                                @NamedAttributeNode("threeList") // Two → Three
-                        }
-                )
+                @NamedSubgraph(name = "subgraph.two",
+                attributeNodes = {@NamedAttributeNode(value = "threeList")})
         }
 )
 public class One {

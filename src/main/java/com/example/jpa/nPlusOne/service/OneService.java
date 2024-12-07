@@ -1,5 +1,6 @@
 package com.example.jpa.nPlusOne.service;
 
+import com.example.jpa.nPlusOne.repository.OneEntityGraphRepository;
 import com.example.jpa.nPlusOne.repository.OneRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.List;
 public class OneService {
 
     private final OneRepository oneRepository;
+    private final OneEntityGraphRepository oneEntityGraphRepository;
 
     public void findAllNumbers() {
         List<String> list = oneRepository.findAll().stream()
@@ -26,6 +28,16 @@ public class OneService {
 
     public void findALlNumbersByFetchJoin() {
         List<String> list = oneRepository.findAllWithTwoAndThree().stream()
+                .flatMap(one -> one.getTwoList().stream()
+                        .flatMap(two -> two.getThreeList().stream()
+                                .map(three -> one.getName() + two.getName() + three.getName())))
+                .toList();
+
+        System.out.println("결과: " + list);
+    }
+
+    public void findNumbersByEntityGraph() {
+        List<String> list = oneEntityGraphRepository.findAllWithEntityGraph().stream()
                 .flatMap(one -> one.getTwoList().stream()
                         .flatMap(two -> two.getThreeList().stream()
                                 .map(three -> one.getName() + two.getName() + three.getName())))
