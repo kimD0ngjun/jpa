@@ -370,6 +370,23 @@ HHH90003004: firstResult/maxResults specified with collection fetch; applying in
 
 <img width="951" alt="연속N+1문제" src="https://github.com/user-attachments/assets/93a31fe9-21f9-4eea-adde-705fa24ae625">
 
+연속된 연관관계에서 각각의 부모 엔티티의 개수만큼 해당 엔티티 조회 쿼리가 생기게 되는 것을 볼 수 있는데, 이걸 JPQL의 `Fetch Join`을 여러 번 활용하면 되겠다고 생각할 수 있지만, 연속된 1:N 관계가 맺어진 최상위 부모 엔티티에 대하여 사용할 경우 예외를 반환하게 된다.
+
+```java
+@Repository
+public interface OneRepository extends JpaRepository<One, Long> {
+
+    @Query("SELECT DISTINCT o FROM One o " +
+            "LEFT JOIN FETCH o.twoList t " +
+            "LEFT JOIN FETCH t.threeList th " +
+            "ORDER BY o.id, t.id, th.id")
+    List<One> findAllWithTwoAndThree();
+}
+```
+
+<img width="979" alt="연속N+1페치조인문제발생" src="https://github.com/user-attachments/assets/862e23d9-69c8-42c6-9a37-0bcfd066c69d">
+
+위의 사진처럼 JPA가 내부적으로 `MultipleBagFetchException`을 감싸서 `InvalidDataAccessApiUsageException`으로 변환하게 된다. 즉, 래퍼 예외를 반환시킨다. Hibernate가 두 개 이상의 컬렉션(`twoList`, `threeList`)을 동시에 조인하려고 하면 SQL의 Cartesian Product(데카르트 곱) 형태로 생성된 `ResultSet`에서 어떤 데이터가 `twoList`에 속하고 어떤 데이터가 `threeList`에 속하는지 명확히 구분할 수 없다.
 
 #### (4) 복수의 1:N 관계에서는 사용 불가
 

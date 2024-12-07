@@ -23,4 +23,14 @@ public class OneService {
 
         System.out.println("결과: " + list);
     }
+
+    public void findALlNumbersByFetchJoin() {
+        List<String> list = oneRepository.findAllWithTwoAndThree().stream()
+                .flatMap(one -> one.getTwoList().stream()
+                        .flatMap(two -> two.getThreeList().stream()
+                                .map(three -> one.getName() + two.getName() + three.getName())))
+                .toList();
+
+        System.out.println("결과: " + list);
+    }
 }

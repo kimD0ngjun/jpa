@@ -2,6 +2,7 @@ package com.example.jpa.nPlusOne;
 
 import com.example.jpa.nPlusOne.service.AService;
 import com.example.jpa.nPlusOne.service.FetchJoinService;
+import com.example.jpa.nPlusOne.service.OneService;
 import org.hibernate.loader.MultipleBagFetchException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,9 @@ public class FetchJoinTest {
 
     @Autowired
     private FetchJoinService fetchJoinService;
+
+    @Autowired
+    private OneService oneService;
 
     @Autowired
     private AService aService;
@@ -37,6 +41,12 @@ public class FetchJoinTest {
     @Test
     void testFetchJoinWithPaging() {
         fetchJoinService.findAllMembersWithPaging();
+    }
+
+    @DisplayName("연속된 연관관계 fetch join 확인")
+    @Test
+    void testContinuousFetchJoin() {
+//        oneService.findALlNumbersByFetchJoin();
     }
 
     /**
