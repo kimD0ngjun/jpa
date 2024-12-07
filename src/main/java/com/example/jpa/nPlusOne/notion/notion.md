@@ -362,7 +362,18 @@ HHH90003004: firstResult/maxResults specified with collection fetch; applying in
 
 페이징 사이즈가 부모 엔티티의 개수와 같거나 작을 경우, Hibernate는 페이징 논리에 따라 `COUNT` 쿼리 + 데이터 조회 쿼리를 실행하게 된다. 그렇기에 굳이굳이 페이징을 사용한다면 부모 엔티티의 개수를 초과해서 페이징 사이즈를 정해야겠다만 원칙적으로 아웃 오브 메모리 예외가 발생할 수 있으니 권유하지 않는 것이다.
 
+#### (3) 연속된 1:N 관계에서는 사용 불가
+
+<img width="503" alt="연속된연관관계" src="https://github.com/user-attachments/assets/09cef5a3-e68d-42df-8462-79ff7bb366ea">
+
+엔티티 `One`이 엔티티 `Two`와 1:N 관계를 맺고, 엔티티 `Two`가 엔티티 `Three`와 1:N 관계를 맺는다. 여기서 `One` 부모 엔티티를 기반으로 그냥 반환하면 당연히 N+1 문제가 발생하게 된다.
+
+<img width="951" alt="연속N+1문제" src="https://github.com/user-attachments/assets/93a31fe9-21f9-4eea-adde-705fa24ae625">
+
+
 #### (4) 복수의 1:N 관계에서는 사용 불가
+
+<img width="501" alt="복수N+1" src="https://github.com/user-attachments/assets/08dcec0a-6b0f-467e-8570-86915a015c8e">
 
 엔티티 `A`가 엔티티 `B`와 1:N 관계를 맺고, 엔티티 `A`가 엔티티 `C`와 1:N 관계를 맺는다. 여기서 `A` 부모 엔티티를 기반으로 그냥 반환하면 당연히 N+1 문제가 발생하게 된다.
 
