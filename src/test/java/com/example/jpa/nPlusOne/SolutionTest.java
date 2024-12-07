@@ -25,4 +25,10 @@ public class SolutionTest {
     void testJdbc() {
         solutionService.findAllMembersByJdbc();
     }
+
+    @DisplayName("페이징과 fetch join을 같이 사용하면 메모리 아웃 예외가 발생할 수 있다")
+    @Test
+    void testFetchJoinWithPaging() {
+        solutionService.findAllMembersWithPaging();
+    }
 }

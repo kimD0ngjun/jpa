@@ -4,6 +4,10 @@ import com.example.jpa.nPlusOne.entity.Team;
 import com.example.jpa.nPlusOne.repository.TeamJdbcRepository;
 import com.example.jpa.nPlusOne.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,5 +41,19 @@ public class SolutionService {
     public void findAllMembersByJdbc() {
         List<String> list = teamJdbcRepository.findAll();
         System.out.println(list);
+    }
+
+    /**
+     * Don't use Paging with Fetch Join
+     */
+    public void findAllMembersWithPaging() {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("name")));
+        Page<Team> page = teamRepository.findAllWithMembers(pageable);
+        List<String> list = page.getContent().stream()
+                .flatMap(team -> team.getMembers().stream()
+                        .map(member -> team.getName() + ": " + member.getName()))
+                .toList();
+
+        System.out.println("결과: " + list);;
     }
 }
