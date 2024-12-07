@@ -2,10 +2,13 @@ package com.example.jpa.nPlusOne;
 
 import com.example.jpa.nPlusOne.service.AService;
 import com.example.jpa.nPlusOne.service.FetchJoinService;
+import org.hibernate.loader.MultipleBagFetchException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -36,9 +39,18 @@ public class FetchJoinTest {
         fetchJoinService.findAllMembersWithPaging();
     }
 
+    /**
+     * Spring Data JPA 가 내부적으로
+     * MultipleBagFetchException 을 감싸서 InvalidDataAccessApiUsageException 으로 변환
+     */
     @DisplayName("복수의 연관관계 fetch join 확인")
     @Test
     void testMultiFetchJoin() {
-        aService.findAllBCWithFetchJoin();
+//        aService.findAllBCWithFetchJoin();
+
+        Assertions.assertThrows(
+                InvalidDataAccessApiUsageException.class, // 반환하는 예외 클래스를 작성해야 함
+                () -> aService.findAllBCWithFetchJoin()
+        );
     }
 }
