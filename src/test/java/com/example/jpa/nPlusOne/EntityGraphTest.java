@@ -49,7 +49,7 @@ public class EntityGraphTest {
     @DisplayName("EntityGraph 기반 연속된 연관관계 N+1 확인")
     @Test
     void testOneTwoThreeEntityGraph() {
-//        oneService.findNumbersByEntityGraph();
+        oneService.findNumbersByEntityGraph();
 
         Assertions.assertThrows(
                 InvalidDataAccessApiUsageException.class, // 반환하는 예외 클래스를 작성해야 함
