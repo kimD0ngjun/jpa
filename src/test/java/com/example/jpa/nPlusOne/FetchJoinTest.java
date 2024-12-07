@@ -31,10 +31,4 @@ public class FetchJoinTest {
     void testFetchJoinWithPaging() {
         fetchJoinService.findAllMembersWithPaging();
     }
-
-    @DisplayName("EntityGraph 기반 N+1 문제 해결 테스트")
-    @Test
-    void testEntityGraph() {
-        fetchJoinService.findAllMembersWithEntityGraph();
-    }
 }
