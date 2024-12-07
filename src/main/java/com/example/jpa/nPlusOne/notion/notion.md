@@ -362,3 +362,10 @@ HHH90003004: firstResult/maxResults specified with collection fetch; applying in
 
 페이징 사이즈가 부모 엔티티의 개수와 같거나 작을 경우, Hibernate는 페이징 논리에 따라 `COUNT` 쿼리 + 데이터 조회 쿼리를 실행하게 된다. 그렇기에 굳이굳이 페이징을 사용한다면 부모 엔티티의 개수를 초과해서 페이징 사이즈를 정해야겠다만 원칙적으로 아웃 오브 메모리 예외가 발생할 수 있으니 권유하지 않는 것이다.
 
+### 4) EntityGraph
+
+N+1 문제를 해결할 수 있는 다른 방법으로 `@EntityGraph` 어노테이션이 있다.
+
+
+
+<img width="954" alt="entitygraph" src="https://github.com/user-attachments/assets/1fa65bf3-9180-4fb1-a6db-12696d6932d2">
