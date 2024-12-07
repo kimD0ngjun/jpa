@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -20,9 +22,11 @@ public class A {
 
     @OneToMany(mappedBy = "a")
     private List<B> bList = new ArrayList<>();
+//    private Set<B> bList = new HashSet<>();
 
     @OneToMany(mappedBy = "a")
     private List<C> cList = new ArrayList<>();
+//    private Set<C> cList = new HashSet<>();
 
     public A(String name) {
         this.name = name;
