@@ -56,4 +56,13 @@ public class SolutionService {
 
         System.out.println("결과: " + list);;
     }
+
+    public void findAllMembersWithEntityGraph() {
+        List<String> list = teamRepository.findAll().stream()
+                .flatMap(team -> team.getMembers().stream()
+                        .map(member -> team.getName() + ": " + member.getName()))
+                .toList();
+
+        System.out.println("결과: " + list);;
+    }
 }
