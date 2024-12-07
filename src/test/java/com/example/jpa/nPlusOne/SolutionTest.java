@@ -20,4 +20,9 @@ public class SolutionTest {
         solutionService.findAllMembersByFetchJoin();
     }
 
+    @DisplayName("JDBC 기반 join 문법 직접 활용을 통한 N+1 문제 해결 테스트")
+    @Test
+    void testJdbc() {
+        solutionService.findAllMembersByJdbc();
+    }
 }
