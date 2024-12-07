@@ -208,4 +208,40 @@ public class Team {
 보면 `Team` 엔티티 인스턴스의 내부 정보들을 조회해 올 때, 지연 로딩은 우선 `Team` 엔티티에 대응되는 team 스키마의 필드들을 호출하는 데에 그치지만, 즉시 로딩은 team 스키마 필드와 더불어 연관관계(데이터베이스 입장에서는 외래 키로써 부여된)를 맺고 있는 `Member` 엔티티 인스턴스들까지 한 번에 조회해 온다.<br />
 기존의 지연 로딩에서도 중복되는 쿼리 발신이 N+1 문제로 발생했었고 즉시 로딩이라고 나아지진 않는다. 결국 연관관계 필드의 로딩 시점을 조절하는 것만으로는 해결책이 될 수 없다.
 
-### 2) 
+### 2) 연관관계 방향 설정 (x)
+
+이제까지 확인했던 예제는 전부 `Team` 엔티티의 시선에서 `Member` 타입 필드 리스트를 조회하는 경우였다. 이를 반대로 `Member` 엔티티 입장에서 `Team`을 조회해보자.
+
+```java
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Member {
+    
+    // ...
+
+    @ManyToOne(cascade = CascadeType.ALL) // ~ToOne: EAGER
+    @JoinColumn(name = "team_id") // 외래 키(팀)를 관리하는 측(멤버)에게 부여
+    private Team team;
+
+    // ...
+```
+```java
+// TeamMemberService
+
+public void findAllMembersByMemberRepo() {
+    List<String> list = memberRepository.findAll().stream()
+            .map(member -> member.getTeam().getName() + ": " + member.getName())
+            .toList();
+
+    System.out.println("결과: " + list);
+}
+```
+<img width="989" alt="방향조회변경도 해결책이아니다" src="https://github.com/user-attachments/assets/ba11f2e7-dcd7-40f9-af51-34756dbc7e81">
+
+애시당초 해결이 불가능하다. 이 방법은 오히려 쿼리의 `join` 문법 방향과 더 멀어지는 것이며, 모든 멤버를 조회하고(1) 특정 팀의 ID를 외래 키로 가진 멤버들을 조회(N)하는 방식이기 때문이다.
+
+### 3) Fetch Join
+
+
