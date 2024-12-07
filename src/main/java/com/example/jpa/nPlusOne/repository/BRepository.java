@@ -1,6 +1,6 @@
 package com.example.jpa.nPlusOne.repository;
 
-import com.example.jpa.nPlusOne.entity.B;
+import com.example.jpa.nPlusOne.entity.multiOneToN.B;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

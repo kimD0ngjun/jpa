@@ -1,4 +1,4 @@
-package com.example.jpa.nPlusOne.entity;
+package com.example.jpa.nPlusOne.entity.multiOneToN;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,10 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class C {
+public class B {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "c_id")
+    @Column(name = "b_id")
     private Long id;
 
     private String name;
@@ -21,7 +21,7 @@ public class C {
     @JoinColumn(name = "a_id")
     private A a;
 
-    public C(String name) {
+    public B(String name) {
         this.name = name;
     }
 }

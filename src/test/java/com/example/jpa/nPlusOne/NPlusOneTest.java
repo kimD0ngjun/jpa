@@ -1,17 +1,10 @@
 package com.example.jpa.nPlusOne;
 
-import com.example.jpa.nPlusOne.entity.A;
-import com.example.jpa.nPlusOne.entity.B;
-import com.example.jpa.nPlusOne.entity.C;
-import com.example.jpa.nPlusOne.repository.ARepository;
-import com.example.jpa.nPlusOne.repository.BRepository;
-import com.example.jpa.nPlusOne.repository.CRepository;
 import com.example.jpa.nPlusOne.service.AService;
 import com.example.jpa.nPlusOne.service.TeamMemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest

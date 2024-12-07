@@ -1,7 +1,5 @@
 package com.example.jpa.nPlusOne.repository;
 
-import com.example.jpa.nPlusOne.entity.Member;
-import com.example.jpa.nPlusOne.entity.Team;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

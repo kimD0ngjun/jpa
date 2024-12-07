@@ -1,6 +1,6 @@
 package com.example.jpa.nPlusOne.repository;
 
-import com.example.jpa.nPlusOne.entity.Team;
+import com.example.jpa.nPlusOne.entity.oneToN.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;

@@ -1,6 +1,6 @@
 package com.example.jpa.nPlusOne.service;
 
-import com.example.jpa.nPlusOne.entity.Team;
+import com.example.jpa.nPlusOne.entity.oneToN.Team;
 import com.example.jpa.nPlusOne.repository.TeamJdbcRepository;
 import com.example.jpa.nPlusOne.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;

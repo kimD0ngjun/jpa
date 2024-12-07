@@ -1,7 +1,6 @@
-package com.example.jpa.nPlusOne.entity;
+package com.example.jpa.nPlusOne.entity.oneToN;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
