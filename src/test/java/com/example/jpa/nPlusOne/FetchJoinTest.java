@@ -43,10 +43,19 @@ public class FetchJoinTest {
         fetchJoinService.findAllMembersWithPaging();
     }
 
+    /**
+     * Spring Data JPA 가 내부적으로
+     * MultipleBagFetchException 을 감싸서 InvalidDataAccessApiUsageException 으로 변환
+     */
     @DisplayName("연속된 연관관계 fetch join 확인")
     @Test
     void testContinuousFetchJoin() {
 //        oneService.findALlNumbersByFetchJoin();
+
+        Assertions.assertThrows(
+                InvalidDataAccessApiUsageException.class, // 반환하는 예외 클래스를 작성해야 함
+                () -> oneService.findALlNumbersByFetchJoin()
+        );
     }
 
     /**
