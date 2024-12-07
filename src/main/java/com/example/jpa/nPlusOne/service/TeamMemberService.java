@@ -20,9 +20,11 @@ public class TeamMemberService {
      */
     public void findAllMembers() {
         List<String> list = teamRepository.findAll().stream()
-                .flatMap(team -> team.getMembers().stream())
-                .map(Member::getName)
+                .flatMap(team -> team.getMembers().stream()
+                        .map(member -> team.getName() + ": " + member.getName()))
                 .toList();
+
+        System.out.println("결과: " + list);
     }
 
     public void findAllTeams() {
@@ -36,7 +38,9 @@ public class TeamMemberService {
         Team team = teamRepository.findById(1L).orElseThrow();
 
         List<String> list = team.getMembers().stream()
-                .map(Member::getName)
+                .map(member -> team.getName() + ": " + member.getName())
                 .toList();
+
+        System.out.println("결과: " + list);
     }
 }
