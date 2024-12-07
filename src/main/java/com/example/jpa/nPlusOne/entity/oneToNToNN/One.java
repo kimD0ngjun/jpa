@@ -10,6 +10,20 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@NamedEntityGraph(
+        name = "OneTwoThreeGraph", // 그래프 이름
+        attributeNodes = {
+                @NamedAttributeNode(value = "twoList", subgraph = "two-to-three") // One → Two
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "two-to-three",
+                        attributeNodes = {
+                                @NamedAttributeNode("threeList") // Two → Three
+                        }
+                )
+        }
+)
 public class One {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
