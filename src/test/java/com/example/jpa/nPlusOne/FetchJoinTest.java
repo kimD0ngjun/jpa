@@ -1,5 +1,6 @@
 package com.example.jpa.nPlusOne;
 
+import com.example.jpa.nPlusOne.service.AService;
 import com.example.jpa.nPlusOne.service.FetchJoinService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,9 @@ public class FetchJoinTest {
 
     @Autowired
     private FetchJoinService fetchJoinService;
+
+    @Autowired
+    private AService aService;
 
     @DisplayName("fetch join 기반 N+1 문제 해결 테스트")
     @Test
@@ -30,5 +34,11 @@ public class FetchJoinTest {
     @Test
     void testFetchJoinWithPaging() {
         fetchJoinService.findAllMembersWithPaging();
+    }
+
+    @DisplayName("복수의 연관관계 fetch join 확인")
+    @Test
+    void testMultiFetchJoin() {
+        aService.findAllBCWithFetchJoin();
     }
 }

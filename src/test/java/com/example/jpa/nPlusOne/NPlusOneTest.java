@@ -142,4 +142,5 @@ public class NPlusOneTest {
     void testMultiNPlusOne() {
         aService.findAllBC();
     }
+
 }
