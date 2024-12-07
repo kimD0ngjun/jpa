@@ -73,52 +73,6 @@ public class Member {
 
 #### (2) 테스트 코드 작성
 
-서비스에서 팀들을 조회하면서 각 멤버들의 이름을 일괄 조회하는 코드를 작성한다.
-
-```java
-@Transactional
-@Service
-@RequiredArgsConstructor
-public class TeamMemberService {
-    private final TeamRepository teamRepository;
-
-    public void findAllMembers() {
-        List<String> list = teamRepository.findAll().stream()
-                .flatMap(team -> team.getMembers().stream())
-                .map(Member::getName)
-                .toList();
-    }
-
-    public void findParticularMembers() {
-        Team team = teamRepository.findById(1L).orElseThrow();
-
-        List<String> list = team.getMembers().stream()
-                .map(Member::getName)
-                .toList();
-    }
-}
-```
-
-`findAllMembers()` 메소드는 전체 팀들을 조회하면서 각 팀의 멤버들 이름을 조회하는 메소드이고, `findParticularMembers()` 메소드는 특정 팀(ID : `1L`)을 조회하면서 해당 팀의 멤버들 이름을 조회하는 메소드이다.<br/>
-각각의 메소드들을 호출했을 때, hibernate가 어떻게 쿼리를 발신하는지를 확인하면서 N+1 문제를 직접 확인한다.
-
-#### (3) 테스트 실행 결과
-
-`findAllMembers()` 메소드를 실행하고 출력되는 쿼리문을 확인하면 아래와 같다.
-
-<img width="925" alt="전체_팀_멤버들_조회_N+1" src="https://github.com/user-attachments/assets/18b22a69-7e28-4441-9776-2d2b76244fd9">
-
-`findParticularMembers()` 메소드를 실행하고 출력되는 쿼리문을 확인하면 아래와 같다.
-
-<img width="925" alt="특정_팀_멤버_조회_N+1" src="https://github.com/user-attachments/assets/6030d688-a43e-4a63-998e-29e8f2feb849">
-
-### 2) 탐구
-
-### (1) 왜 문제가 되는가?
-
-우리가 원하는 것에 대해 다시 확인을 해보자.<br />
-일단 직접 데이터베이스에 접근해서 테이블을 확인하고 우리가 원하는 결과 조회를 확인한다.
-
 현재 데이터베이스(MySQL)에는 다음과 같은 테이블들이 있다.
 
 <img width="671" alt="팀,멤버필드확인" src="https://github.com/user-attachments/assets/4c66645c-1035-4d5a-80c1-49c5e815c812">
@@ -132,17 +86,22 @@ public class TeamMemberService {
 <img width="502" alt="조인문" src="https://github.com/user-attachments/assets/f24840a9-6a38-4afe-ae9f-c9bce2669790">
 
 위의 테이블처럼 팀 정보와 그 팀에 해당하는 멤버들을 정보를 일괄 조회할 수 있다.<br />
-다시 `findAllMembers()` 메소드에 있는 코드 로직을 면밀히 살펴보자.
+이것을 JPA의 데이터베이스 객체 매핑 장점을 활용해서 자바 레벨에서도 코드로 작성할 수 있다.
 
 ```java
 public void findAllMembers() {
     List<String> list = teamRepository.findAll().stream()
-            .flatMap(team -> team.getMembers().stream())
-            .map(Member::getName)
+            .flatMap(team -> team.getMembers().stream()
+                    .map(member -> team.getName() + ": " + member.getName()))
             .toList();
+
+    System.out.println("결과: " + list);
 }
 ```
 
+이것을 실행하면 다음과 같이 hibernate 쿼리 출력 로그와 결과 로그를 확인할 수 있다.
+
+<img width="935" alt="결과 출력 로그" src="https://github.com/user-attachments/assets/176515d3-0c06-4da9-bb38-40b1f8c33379">
 
 ---
 

@@ -1,7 +1,7 @@
 package com.example.jpa.nPlusOne.service;
 
-import com.example.jpa.nPlusOne.entity.Member;
 import com.example.jpa.nPlusOne.entity.Team;
+import com.example.jpa.nPlusOne.repository.MemberRepository;
 import com.example.jpa.nPlusOne.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,14 +14,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeamMemberService {
     private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * one query(select team from team) + N query(select member from member where~)
      */
-    public void findAllMembers() {
+    public void findAllMembersByTeamRepo() {
         List<String> list = teamRepository.findAll().stream()
                 .flatMap(team -> team.getMembers().stream()
                         .map(member -> team.getName() + ": " + member.getName()))
+                .toList();
+
+        System.out.println("결과: " + list);
+    }
+
+    public void findAllMembersByMemberRepo() {
+        List<String> list = memberRepository.findAll().stream()
+                .map(member -> member.getTeam().getName() + ": " + member.getName())
                 .toList();
 
         System.out.println("결과: " + list);

@@ -1,15 +1,10 @@
 package com.example.jpa.nPlusOne;
 
-import com.example.jpa.nPlusOne.entity.Member;
-import com.example.jpa.nPlusOne.entity.Team;
-import com.example.jpa.nPlusOne.repository.TeamRepository;
 import com.example.jpa.nPlusOne.service.TeamMemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @SpringBootTest
 @Transactional
@@ -49,10 +44,16 @@ public class NPlusOneTest {
 //        }
 //    }
 
-    @DisplayName("N+1 문제 테스트: 전체 팀 멤버 조회")
+    @DisplayName("N+1 문제 테스트: 전체 팀 멤버 조회 by 팀 레포")
     @Test
-    void testNPlusOneAllMembers() {
-        teamMemberService.findAllMembers();
+    void testNPlusOneAllMembersByTeamRepo() {
+        teamMemberService.findAllMembersByTeamRepo();
+    }
+
+    @DisplayName("N+1 문제 테스트: 전체 팀 멤버 조회 by 멤버 레포")
+    @Test
+    void testNPlusOneTeamMembersByMemberRepo() {
+        teamMemberService.findAllMembersByMemberRepo();
     }
 
     @DisplayName("N+1 문제 테스트: 특정 팀 멤버 조회")
