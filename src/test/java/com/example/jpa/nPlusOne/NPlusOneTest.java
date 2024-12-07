@@ -1,10 +1,17 @@
 package com.example.jpa.nPlusOne;
 
+import com.example.jpa.nPlusOne.entity.oneToNToNN.One;
+import com.example.jpa.nPlusOne.entity.oneToNToNN.Three;
+import com.example.jpa.nPlusOne.entity.oneToNToNN.Two;
+import com.example.jpa.nPlusOne.repository.OneRepository;
+import com.example.jpa.nPlusOne.repository.ThreeRepository;
+import com.example.jpa.nPlusOne.repository.TwoRepository;
 import com.example.jpa.nPlusOne.service.AService;
 import com.example.jpa.nPlusOne.service.TeamMemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -17,6 +24,15 @@ public class NPlusOneTest {
 
     @Autowired
     private AService aService;
+
+//    @Autowired
+//    private OneRepository oneRepository;
+//
+//    @Autowired
+//    private TwoRepository twoRepository;
+//
+//    @Autowired
+//    private ThreeRepository threeRepository;
 
 //    @Autowired
 //    private ARepository aRepository;
@@ -102,6 +118,24 @@ public class NPlusOneTest {
 //                C c = new C("c" + i);
 //                cRepository.save(c);
 //                a3.addC(c);
+//            }
+//        }
+//    }
+//
+//    @Test
+//    void setUp() {
+//        One one = new One("one1");
+//        oneRepository.save(one);
+//
+//        for (int i=1; i<=3; i++) {
+//            Two two = new Two("two" + i);
+//            twoRepository.save(two);
+//            one.addTwo(two);
+//
+//            for (int j=1; j<=3; j++) {
+//                Three three = new Three("three" + j);
+//                threeRepository.save(three);
+//                two.addThree(three);
 //            }
 //        }
 //    }
