@@ -431,7 +431,9 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
 ### (2) 연속된 1:N 관계에서의 사용 불가
 
+연속된 1:N 관계에서 사용할 수 없다.
 
+<img width="965" alt="스크린샷 2024-12-08 오전 4 15 40" src="https://github.com/user-attachments/assets/eb17f26f-e5ef-4788-8a9d-bf8c7cbea87d">
 
 ### (3) 복수의 1:N 관계에서는 사용 불가
 
@@ -447,3 +449,6 @@ public interface ARepository extends JpaRepository<A,Long> {
 
 <img width="985" alt="복수의일대다는엔티티그래프도불가능" src="https://github.com/user-attachments/assets/36e1f16f-6862-4ca1-8f4d-529e95a07bdf">
 
+---
+*위의 모든 내용은 사견이라 틀릴 수 있음*
+---
