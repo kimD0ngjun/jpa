@@ -47,7 +47,7 @@ public class SolutionService {
      * Don't use Paging with Fetch Join
      */
     public void findAllMembersWithPaging() {
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("name")));
+        Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Order.asc("name")));
         Page<Team> page = teamRepository.findAllWithMembers(pageable);
         List<String> list = page.getContent().stream()
                 .flatMap(team -> team.getMembers().stream()
