@@ -110,11 +110,15 @@ public void findAllMembersByTeamRepo() {
 이게 문제가 되는 이유는, **쿼리가 중복 발신**되기 때문이다.<br />
 노란색 박스는 아래처럼 팀 테이블의 팀 ID와 이름을 조회한다.
 
->``select t1_0.team_id,t1_0.team_name from team t1_0``
+```sql
+select t1_0.team_id,t1_0.team_name from team t1_0
+```
 
 초록색 박스는 아래처럼 멤버 테이블에서 외래 키에 대응되는 팀의 ID 조건부로 팀 정보와 멤버 정보를 같이 조회한다.
 
->``select m1_0.team_id,m1_0.member_id,m1_0.member_name from member m1_0 where m1_0.team_id=?``
+```sql
+select m1_0.team_id,m1_0.member_id,m1_0.member_name from member m1_0 where m1_0.team_id=?
+```
 
 사실 JPA 입장으로 봤을 때는 코드 로직을 해석해보면 충분히 납득이 간다.<br />
 아래처럼 순서가 이뤄지고 이것은 머릿속으로도 충분히 그림이 그려지기 때문이다.
@@ -125,7 +129,9 @@ public void findAllMembersByTeamRepo() {
 이렇게 JPA 입장에서 원하는 결과를 조회하는 데에는 문제가 없지만, 문제는 데이터베이스다.<br />
 위의 결과를 그저 딱 한 번의 쿼리로도 충분히 조회할 수 있기 때문이다.
 
-> `select t.team_id, t.team_name, m.member_id, m.member_name from team t left join member m on t.team_id = m.team_id;`
+```sql
+select t.team_id, t.team_name, m.member_id, m.member_name from team t left join member m on t.team_id = m.team_id;
+```
 
 <img width="505" alt="leftjoin" src="https://github.com/user-attachments/assets/85aeab52-41b3-416b-a17c-54bf02ce759b">
 
@@ -244,4 +250,25 @@ public void findAllMembersByMemberRepo() {
 
 ### 3) Fetch Join
 
+아까 데이터베이스에 직접 SQL을 날려서 한 번의 호출로 연결된 테이블을 조회함으로써 원하는 모든 데이터를 조회할 수 있었다. 이때 쓰인 문법이 `join` 문법이다.
 
+```sql
+select t.team_id, t.team_name, m.member_id, m.member_name from team t left join member m on t.team_id = m.team_id;
+```
+
+위의 SQL문과 유사한 JPA의 **JPQL(Java Persistence Query Language)** 를 활용해서 한 번의 호출로 예상 결과를 호출할 수 있다. 이 문법을 `Fetch Join` 이라고 한다.
+
+```jpaql
+SELECT t FROM Team t JOIN FETCH t.members
+```
+```java
+@Repository
+public interface TeamRepository extends JpaRepository<Team, Long> {
+    @Query("SELECT t FROM Team t JOIN FETCH t.members")
+    List<Team> findAllWithMembers();
+}
+```
+
+<img width="989" alt="fetchjoin" src="https://github.com/user-attachments/assets/bbbe4638-3873-4862-aee7-631ac4a84f1a">
+
+위처럼 쿼리 호출이 단 한 번으로 예상했던 결과가 호출돼서 로그에 찍히는 것을 확인할 수 있다.

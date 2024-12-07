@@ -1,6 +1,7 @@
 package com.example.jpa.nPlusOne.service;
 
 import com.example.jpa.nPlusOne.entity.Team;
+import com.example.jpa.nPlusOne.repository.TeamJdbcRepository;
 import com.example.jpa.nPlusOne.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 public class SolutionService {
 
     private final TeamRepository teamRepository;
+    private final TeamJdbcRepository teamJdbcRepository;
 
     /**
      * Fetch Join
@@ -27,5 +29,13 @@ public class SolutionService {
                 .toList();
 
         System.out.println("결과: " + list);
+    }
+
+    /**
+     * JDBC like JPQL Fetch Join
+     */
+    public void findAllMembersByJdbc() {
+        List<String> list = teamJdbcRepository.findAll();
+        System.out.println(list);
     }
 }
