@@ -7,6 +7,7 @@ import com.example.jpa.nPlusOne.repository.OneRepository;
 import com.example.jpa.nPlusOne.repository.ThreeRepository;
 import com.example.jpa.nPlusOne.repository.TwoRepository;
 import com.example.jpa.nPlusOne.service.AService;
+import com.example.jpa.nPlusOne.service.OneService;
 import com.example.jpa.nPlusOne.service.TeamMemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class NPlusOneTest {
 
     @Autowired
     private AService aService;
+    @Autowired
+    private OneService oneService;
 
 //    @Autowired
 //    private OneRepository oneRepository;
@@ -164,10 +167,41 @@ public class NPlusOneTest {
         teamMemberService.findAllTeams();
     }
 
+    /**
+     * SELECT
+     *     o.one_id AS one_id,
+     *     o.name AS one_name,
+     *     t.two_id AS two_id,
+     *     t.name AS two_name,
+     *     th.three_id AS three_id,
+     *     th.name AS three_name
+     * FROM one o
+     * LEFT JOIN two t ON o.one_id = t.one_id
+     * LEFT JOIN three th ON t.two_id = th.two_id
+     * ORDER BY o.one_id, t.two_id, th.three_id;
+     */
+    @DisplayName("연속된 연관관계 N+1 문제 확인")
+    @Test
+    void testContinuousNPlusOne() {
+        oneService.findAllNumbers();
+    }
+
+    /**
+     * SELECT
+     *     a.a_id AS a_id,
+     *     a.name AS a_name,
+     *     b.b_id AS b_id,
+     *     b.name AS b_name,
+     *     c.c_id AS c_id,
+     *     c.name AS c_name
+     * FROM a
+     * LEFT JOIN b ON a.a_id = b.a_id
+     * LEFT JOIN c ON a.a_id = c.a_id
+     * ORDER BY a.a_id, b.b_id, c.c_id;
+     */
     @DisplayName("복수의 연관관계 N+1 문제 확인")
     @Test
     void testMultiNPlusOne() {
         aService.findAllBC();
     }
-
 }
