@@ -250,6 +250,8 @@ public void findAllMembersByMemberRepo() {
 
 ### 3) Fetch Join
 
+#### (1) 적용
+
 아까 데이터베이스에 직접 SQL을 날려서 한 번의 호출로 연결된 테이블을 조회함으로써 원하는 모든 데이터를 조회할 수 있었다. 이때 쓰인 문법이 `join` 문법이다.
 
 ```sql
@@ -272,3 +274,41 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 <img width="989" alt="fetchjoin" src="https://github.com/user-attachments/assets/bbbe4638-3873-4862-aee7-631ac4a84f1a">
 
 위처럼 쿼리 호출이 단 한 번으로 예상했던 결과가 호출돼서 로그에 찍히는 것을 확인할 수 있다.
+
+#### (2) JDBC와의 차이점
+
+여담이지만, JPQL을 쓰는 게 아닌 직접 SQL을 활용해서 JDBC로 해결할 수도 있다. 물론 이것은 hibernate가 작성하는 쿼리가 아니기 때문에 히카리풀 로그에 남지 않는다.
+
+```java
+@Repository
+@RequiredArgsConstructor
+public class TeamJdbcRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public List<String> findAll() {
+        String sql = "SELECT t.team_id, t.team_name, m.member_id, m.member_name " +
+                "FROM team t " +
+                "LEFT JOIN member m ON t.team_id = m.team_id";
+        
+        List<String> list = new ArrayList<>();
+
+        jdbcTemplate.query(sql, rs -> {
+            String teamName = rs.getString("team_name");
+            String memberName = rs.getString("member_name");
+            
+            list.add(teamName + " :" + memberName);
+        });
+
+        return list;
+    }
+}
+```
+
+<img width="995" alt="jdbc 테스트" src="https://github.com/user-attachments/assets/6af18b52-4062-471c-b1f5-00de39a67a64">
+
+다만 JPA를 활용하는 이상 JPQL을 기반으로 `Fetch Join`을 활용하는 것이 더 나아 보인다. JPA의 기능 중, 영속성 컨텍스트에 영속화하는 내용이 있는데 `Fetch Join`으로 조회된 연관관계는 영속성 컨텍스트의 1차 캐시에 저장되어 다시 엔티티 그래프를 탐색해도 조회 쿼리가 수행되지 않지만 그냥 JDBC로 `JOIN` 문법을 활용하는 것은 ORM과 무관하기 때문이다.<br />
+애시당초 ORM의 취지는 객체와 데이터베이스 간의 매핑을 통한 편의성 추구 및 패러다임 차이 간극을 줄이는 것이기 때문이다.
+
+#### (3) 페이징 관련
+
