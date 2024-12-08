@@ -18,6 +18,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     @Query("SELECT t FROM Team t JOIN FETCH t.members")
     Page<Team> findAllWithMembers(Pageable pageable);
 
-    @EntityGraph(attributePaths = "members") // 함께 조회하려는 연관관계 필드 명시
+//    @EntityGraph(attributePaths = "members") // 함께 조회하려는 연관관계 필드 명시
     List<Team> findAll();
 }
