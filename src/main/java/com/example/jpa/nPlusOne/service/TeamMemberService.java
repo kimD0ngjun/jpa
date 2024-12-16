@@ -18,14 +18,17 @@ public class TeamMemberService {
 
     /**
      * one query(select team from team) + N query(select member from member where~)
+     *
+     * @return
      */
-    public void findAllMembersByTeamRepo() {
+    public List<String> findAllMembersByTeamRepo() {
         List<String> list = teamRepository.findAll().stream()
                 .flatMap(team -> team.getMembers().stream()
                         .map(member -> team.getName() + ": " + member.getName()))
                 .toList();
 
         System.out.println("결과: " + list);
+        return list;
     }
 
     public void findAllMembersByMemberRepo() {

@@ -25,14 +25,17 @@ public class FetchJoinService {
      * Fetch Join
      * select t.team_id, t.team_name, m.member_id, m.member_name
      * from team t left join member m on t.team_id = m.team_id;
+     *
+     * @return
      */
-    public void findAllMembersByFetchJoin() {
+    public List<String> findAllMembersByFetchJoin() {
         List<String> list = teamRepository.findAllWithMembers().stream()
                 .flatMap(team -> team.getMembers().stream()
                         .map(member -> team.getName() + ": " + member.getName()))
                 .toList();
 
         System.out.println("결과: " + list);
+        return list;
     }
 
     /**
