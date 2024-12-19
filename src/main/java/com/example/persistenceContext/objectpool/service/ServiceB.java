@@ -1,7 +1,7 @@
-package com.example.nPlusOne.persistenceContext.objectpool.service;
+package com.example.persistenceContext.objectpool.service;
 
-import com.example.nPlusOne.persistenceContext.objectpool.entity.Human;
-import com.example.nPlusOne.persistenceContext.objectpool.repository.HumanRepository;
+import com.example.persistenceContext.objectpool.entity.Human;
+import com.example.persistenceContext.objectpool.repository.HumanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ServiceA {
+public class ServiceB {
 
     private final HumanRepository humanRepository;
 

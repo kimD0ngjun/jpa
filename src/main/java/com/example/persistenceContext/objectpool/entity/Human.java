@@ -1,4 +1,4 @@
-package com.example.nPlusOne.persistenceContext.objectpool.entity;
+package com.example.persistenceContext.objectpool.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

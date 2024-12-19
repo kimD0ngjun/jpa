@@ -1,4 +1,4 @@
-package com.example.nPlusOne.persistenceContext.transaction;
+package com.example.persistenceContext.transaction;
 
 import jakarta.transaction.TransactionManager;
 import org.springframework.data.repository.CrudRepository;

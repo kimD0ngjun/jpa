@@ -1,4 +1,4 @@
-package com.example.nPlusOne.persistenceContext.objectpool.dto;
+package com.example.persistenceContext.objectpool.dto;
 
 import com.example.nPlusOne.entity.multiOneToN.B;
 import lombok.AllArgsConstructor;
