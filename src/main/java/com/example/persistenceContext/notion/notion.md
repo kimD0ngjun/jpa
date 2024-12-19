@@ -27,8 +27,6 @@
 
 스프링 JPA에 있는 개념 중 하나인 지연 로딩이 바로 프록시 패턴의 예시인 **지연 초기화**를 구현 활용한 예시다. 또한 JPA에서 1차 캐시와 2차 캐시를 활용할 때 프록시 패턴과 유사한 매커니즘이 작동한다.
 
-#### (1) 기본 프록시 패턴
-
 ```java
 interface ISubject {
     void action();
@@ -40,7 +38,13 @@ class RealSubject implements ISubject {
         System.out.println("원본 객체 액션");
     }
 }
+```
 
+아래서 설명할 예시 코드를 위한 공통 코드로 프록시 객체와 원본 객체의 공통 상위 인터페이스(`ISubject`)와 실제 원본 객체(`RealSubject`)는 위와 같다.
+
+#### (1) 기본 프록시 패턴
+
+```java
 class Proxy implements ISubject {
     private RealSubject realSubject;
 
@@ -69,17 +73,6 @@ class Client {
 #### (2) 가상 프록시 패턴
 
 ```java
-interface ISubject {
-    void action();
-}
-
-class RealSubject implements ISubject {
-    @Override
-    public void action() {
-        System.out.println("원본 객체 액션");
-    }
-}
-
 class Proxy implements ISubject {
     private RealSubject subject;
 
@@ -115,6 +108,39 @@ class Client {
 - 즉, 프록시(`Proxy`)가 원본 객체를 참조하여 생성을 제어
 - 기본 프록시에서는 프록시의 생성자에서 동시에 원본 객체도 생성이 이뤄졌는데, 가상 프록시는 생성이 됐다고 원본 객체가 생성되지 않음. **차후에 클라이언트가 프록시의 메소드 호출 시점에서 그제야 원본 객체가 생성되므로 지연 초기화 실현**
 - 객체 생성을 미루는 것 역시 프록시가 클라이언트로부터 메소드를 가로챔(클라이언트의 요청이 프록시 객체를 먼저 거침)
+
+#### (3) 보호 프록시 패턴
+
+```java
+class Proxy implements ISubject {
+    private RealSubject subject; // 대상 객체를 composition
+    boolean access; // 접근 권한
+
+    Proxy(RealSubject subject, boolean access) {
+        this.subject = subject;
+        this.access = access;
+    }
+
+    public void action() {
+        if (access) {
+            subject.action(); // 위임
+            System.out.println("프록시 객체 액션");
+        } else {
+            System.out.println("접근 권한 없음");
+        }
+    }
+}
+
+class Client {
+    public static void main(String[] args) {
+        ISubject subject = new Proxy(new RealSubject(), false);
+        subject.action();
+    }
+}
+```
+
+- 프록시가 원본 객체에 대하여 접근을 제어함으로써 특정 클라이언만 서비스 객체 접근 가능
+- 클라이언트의 자격 증명에 따라 요청 전달 가능
 
 
 
