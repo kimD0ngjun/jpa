@@ -22,7 +22,9 @@ public class TeamMemberService {
      * @return
      */
     public List<String> findAllMembersByTeamRepo() {
-        List<String> list = teamRepository.findAll().stream()
+        List<Team> teams = teamRepository.findAll();
+
+        List<String> list = teams.stream()
                 .flatMap(team -> team.getMembers().stream()
                         .map(member -> team.getName() + ": " + member.getName()))
                 .toList();
