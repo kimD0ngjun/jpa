@@ -1,10 +1,5 @@
 package com.example.jpa.persistenceContext.objectpool.controller;
 
-import com.example.jpa.nPlusOne.repository.ARepository;
-import com.example.jpa.nPlusOne.repository.BRepository;
-import com.example.jpa.persistenceContext.objectpool.dto.ABDto;
-import com.example.jpa.persistenceContext.objectpool.dto.ADto;
-import com.example.jpa.persistenceContext.objectpool.dto.BDto;
 import com.example.jpa.persistenceContext.objectpool.entity.Human;
 import com.example.jpa.persistenceContext.objectpool.service.ServiceA;
 import com.example.jpa.persistenceContext.objectpool.service.ServiceB;
@@ -20,9 +15,6 @@ public class HumanController {
 
     private final ServiceA serviceA;
     private final ServiceB serviceB;
-
-    private final ARepository aRepository;
-    private final BRepository bRepository;
 
     /**
      * 호출 시점이 곧 트랜잭션, 즉 한 번 호출할 때 serviceA와 관련된 트랜잭션과 serviceB와 관련된 트랜잭션은
@@ -41,15 +33,5 @@ public class HumanController {
 
         System.out.println(result);
         return ResponseEntity.status(HttpStatus.OK).body(result);
-    }
-
-    @GetMapping("/record")
-    public ResponseEntity<ABDto> getRecord() {
-        ADto a = new ADto(aRepository.findById(1L).orElseThrow());
-        BDto b = new BDto(bRepository.findById(1L).orElseThrow());
-
-        ABDto dto = new ABDto(a, b);
-
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 }
