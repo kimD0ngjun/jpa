@@ -66,6 +66,58 @@ class Client {
 - 프록시 객체(`Proxy`)와 대상 객체(`RealSubject`)를 공통 인터페이스(`ISubject`) 기반으로 클라이언트가 프록시와 대상을 동일한 방식으로 사용
 - 프록시가 대상을 감쌈으로써 클라이언트(`Client`)가 직접 대상 객체에 접근하는 것을 방지하고 추가 로직(유효성 검증, 캐싱 등)을 프록시에 구현할 수 있음
 
+#### (2) 가상 프록시 패턴
+
+```java
+interface ISubject {
+    void action();
+}
+
+class RealSubject implements ISubject {
+    @Override
+    public void action() {
+        System.out.println("원본 객체 액션");
+    }
+}
+
+class Proxy implements ISubject {
+    private RealSubject subject;
+
+    Proxy() {
+    }
+
+    @Override
+    public void action() {
+        // 클라이언트가 호출한 메소드를 가로채고, 먼저 추가 작업을 할 수 있음
+        System.out.println("프록시에서 메소드 호출 전 처리(클라이언트로부터 메소드를 가로챔)");
+
+        // 프록시 객체는 실제 요청(action(메소드 호출))이 들어 왔을 때 실제 객체를 생성
+        if(subject == null){
+            subject = new RealSubject();
+        }
+        subject.action(); // 위임
+
+        // 실제 로직
+        System.out.println("프록시 객체 액션");
+    }
+}
+
+class Client {
+    public static void main(String[] args) {
+        ISubject subject = new Proxy();
+        subject.action();
+    }
+}
+```
+
+- 원본이 되는 대상(`RealSubject`)의 생성 비용이 크거나 무거운 리소스를 사용하는 작업이 포함될 때 사용하는 패턴
+- 원본 객체의 **지연 초기화**를 지원
+- 즉, 프록시(`Proxy`)가 원본 객체를 참조하여 생성을 제어
+- 기본 프록시에서는 프록시의 생성자에서 동시에 원본 객체도 생성이 이뤄졌는데, 가상 프록시는 생성이 됐다고 원본 객체가 생성되지 않음. **차후에 클라이언트가 프록시의 메소드 호출 시점에서 그제야 원본 객체가 생성되므로 지연 초기화 실현**
+- 객체 생성을 미루는 것 역시 프록시가 클라이언트로부터 메소드를 가로챔(클라이언트의 요청이 프록시 객체를 먼저 거침)
+
+
+
 ---
 
 # 커스텀 객체 풀 아이디어
