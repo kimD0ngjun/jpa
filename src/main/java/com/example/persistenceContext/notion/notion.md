@@ -131,9 +131,16 @@ class Proxy implements ISubject {
     }
 }
 
-class Client {
+class Client1 {
     public static void main(String[] args) {
         ISubject subject = new Proxy(new RealSubject(), false);
+        subject.action();
+    }
+}
+
+class Client2 {
+    public static void main(String[] args) {
+        ISubject subject = new Proxy(new RealSubject(), true);
         subject.action();
     }
 }
@@ -142,7 +149,56 @@ class Client {
 - 프록시가 원본 객체에 대하여 접근을 제어함으로써 특정 클라이언만 서비스 객체 접근 가능
 - 클라이언트의 자격 증명에 따라 요청 전달 가능
 
+#### (4) 로깅 프록시 패턴
 
+```java
+class Proxy implements ISubject {
+    private RealSubject subject;
+
+    Proxy(RealSubject subject) {
+        this.subject = subject;
+    }
+
+    public void action() {
+        System.out.println("로깅..................");
+
+        subject.action(); // 위임
+
+        // 로깅 이외의 추가 프록시 로직
+        System.out.println("프록시 객체 액션");
+
+        System.out.println("로깅..................");
+    }
+}
+
+class Client {
+    public static void main(String[] args) {
+        ISubject sub = new Proxy(new RealSubject());
+        sub.action();
+    }
+}
+```
+
+- 대상 객체(`RealSubject`)에 로깅을 추가
+- 프록시의 로깅 기능은 대상 객체의 기능에 로깅을 추가하면서 재정의
+
+#### (5) 원격 프록시
+
+![img_1.png](img_1.png)
+
+- 여기서 말하는 원격은, **네트워크를 통해 다른 시스템에 위치**함을 의미
+- 즉, 네트워크를 통해 다른 시스템에 위치한 객체에 접근할 수 있도록 클라이언트와 객체 간의 프록시 역할을 하는 구조
+- 클라이언트가 네트워크를 통해 원격 호출을 수행하는 복잡성을 숨겨서 흡사 로컬에서 호출하는 것처럼 보이게 함
+- 프록시의 역할은 **네트워크 연결, 요청-응답의 직렬화/역직렬화**를 담당
+- 멀리 갈 것 없이 JDBC 드라이버가 클라이언트와 DB(원본 객체)와의 연결의 프록시 역할을 맡음
+
+#### (6) 캐싱 프록시
+
+![img_2.png](img_2.png)
+
+- 동일한 요청이 반복해서 들어올 때, 해당 데이터를 캐싱하여 반환하면서 네트워크 요청 비용 절감
+- 클라이언트는 캐싱 데이터를 가지고 왔는지, 직접 데이터를 가지고 왔는지 알 필요가 없음
+- 대표적인 예시가 Nginx, Spring Cache, Redis 캐시
 
 ---
 
