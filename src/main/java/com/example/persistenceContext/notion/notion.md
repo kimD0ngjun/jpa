@@ -318,6 +318,79 @@ public class Main {
 
 자바에서는 `java.lang.reflect.Proxy` 클래스를 활용해서 동적 프록시 패턴을 구현할 수 있다. 런타임에 메소드 호출을 캡처하고 처리하면서 추가적인 동작을 담당하기 위해 리플렉션이 활용되며, 원본 객체와 프록시 객체는 동일 인터페이스를 기반으로 구현하면서 메소드 가로챔을 실현한다.
 
+예제 코드를 통해 동적 프록시를 구현해보자.
+
+```java
+package proxy.dynamic;
+
+public interface Animal {
+    void eat();
+}
+
+// 프록시를 적용할 타겟 객체
+class Tiger implements Animal{
+    @Override
+    public void eat() {
+        System.out.println("호랑이가 음식을 먹습니다.");
+    }
+}
+```
+위처럼 프록시와 대상 객체가 공유할 인터페이스 `Animal`이 작성됐고, 대상 객체인 `Tiger` 내부에 `eat()` 메소드가 오버라이딩 구현되어 있다.
+
+```java
+package proxy.dynamic;
+
+import java.lang.reflect.*;
+
+public class Client {
+    public static void main(String[] arguments) {
+
+        // newProxyInstance() 메서드로 동적으로 프록시 객체를 생성할 수 있다.
+        // 프록시 핸들러
+        Animal tigerProxy = (Animal) Proxy.newProxyInstance(
+                // Animal 인터페이스의 클래스 로더를 사용해 동적 프록시 객체를 생성
+                Animal.class.getClassLoader(), // 대상 객체의 인터페이스의 클래스로더
+                // 동적 프록시는 지정된 인터페이스 목록을 구현하는 익명 클래스
+                new Class[]{Animal.class}, // 대상 객체의 인터페이스
+                // 모든 메서드 호출은 InvocationHandler의 invoke 메서드로 전달
+                /**
+                 * proxy: 동적 프록시 객체 자신 (사용하지 않는 경우가 많음).
+                 * method: 호출된 메서드의 메타정보 (Method 객체).
+                 * args: 메서드에 전달된 인자들 (null일 수도 있음).
+                 */
+                (proxy, method, args) -> { // InvocationHandler 인터페이스 기반 람다 함수
+                    Object target = new Tiger();
+
+                    System.out.println("----eat 메서드 호출 전----"); // 호출 전의 원하는 동작(로킹)
+
+                    Object result = method.invoke(target, args); // 타겟 메소드 호출
+
+                    System.out.println("----eat 메서드 호출 후----"); // 호출 후의 원하는 동작(로킹)
+
+                    return result; // 타겟 메소드 반환값 전달
+                }
+        );
+
+        // 원하는 시점에 메소드 호출을 가로챈다.
+        tigerProxy.eat();
+    }
+}
+```
+
+동적 프록시는 위에서 언급했듯, 런타임 시점의 객체 생성이 전제가 되기 때문에 자바의 장점인 컴파일 시점의 객체 생성을 포기하게 됨으로써 성능 저하는 분명히 존재할 수 있다. 그럼에도 어떤 장점이 존재하길래 활용되는 걸까.
+
+#### (1) 캡슐화를 통한 중복 로직 제거
+
+현재 구현체 `eat()` 메소드의 결과를 나타내기 전후로 **로킹**을 추가하고 있다. 만약 인터페이스 구현체가 늘어나게 된다 해도(`Lion`, `Eagle` 등등..) **공통 관심사**(현재 예제에서는 로깅이지만, 트랜잭션, 인증 등)를 캡슐화함으로써 중복을 줄일 수 있다. 이를 통해 `InvocationHandler`를 재사용할 수 있다.
+
+#### (2) 호출 전후의 동작 동적 변경
+
+유지보수 과정에서 기존의 대상 객체인 `Tiger`와 관련된 로직을 건드리지 않고 호출 전후의 동작을 변경하거나 추가, 삭제할 수 있다. 이는 객체지향에서의 **개방 폐쇄 원칙**을 준수하는 코드 설계다.
+
+#### (3) 런타임에 유연한 동작 변경, 의존성 주입
+
+`target` 변수에 담긴 대상 객체를 런타임에 동적으로 변경할 수 있게 된다. 즉, `new Tiger()` 대신 `new Lion()` 등을 넣어도 괜찮다. 또한 인터페이스 기반 설계여서 **의존성 주입**과도 잘 어울릴 수 있다.
+
 ---
 
 # 커스텀 객체 풀 아이디어
