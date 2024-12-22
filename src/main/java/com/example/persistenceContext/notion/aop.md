@@ -401,6 +401,21 @@ public class Client {
 
 ## 2. 스프링 AOP
 
+AOP 자체는 자바 진영에서만 국한된 개념은 아니며 스프링 AOP는 그저 AOP를 구현한 프레임워크에 불과할 뿐이다. 프로그래밍 패러다임임을 기억할 것.
+
+gradle을 기준으로 스프링 AOP 의존성 추가는 다음과 같이 이뤄진다.
+
+```java
+dependencies {
+    // aop dependency
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+}
+```
+
+해당 의존성을 추가함으로써 로깅, 트랜잭션 관리, 보안 등 부가적인 기능을 비즈니스 로직과 분리하면서 횡단 관심사를 처리하여 중복을 정리하고, 메소드의 실행 전후에 어드바이스를 적용할 수 있다.
+
+또한, 위의 과정에는 기존 코드의 수정이 불필요하므로 비침투적 방식이 적용되고 포인트컷을 통해 특정 클래스 혹은 메소드를 선택할 수 있다.
+
 ### 1) 어드바이스, 포인트컷
 
 ### 2) MethodInterceptor 구현체 기반 AOP 어드바이스
@@ -408,3 +423,14 @@ public class Client {
 ### 3) @Around 어노테이션 기반 AOP 어드바이스
 
 ### 4) 적용 결과 확인
+
+### 5) JPA 의존성과의 연관성
+
+JPA 의존성 설치에는 왜 AOP 의존성 설치가 불필요한가? 핵심적인 이유는 **스프링 프레임워크가 트랜잭션 관리와 AOP 관련 기능을 내부 통합하여 제공**하기 때문이다.
+
+JPA의 트랜잭션 관리 기능에서 스프링 AOP가 사용되는데, 바로 이 JPA 의존성 내부에 아래와 같은 의존성들이 같이 포함된다.
+
+>- Spring Data JPA (JPA와 Hibernate 관련 기능)
+>- Spring ORM (JPA와 스프링의 연동을 담당)
+>- Spring Transaction (트랜잭션 관리 기능)
+>- Spring AOP (트랜잭션의 프록시 기반 구현을 지원)
