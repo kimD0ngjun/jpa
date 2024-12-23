@@ -14,7 +14,7 @@
 
 프록시 패턴은 대상 원본 객체를 대리하여 대신 처리하게 함으로써 로직의 흐름을 제어하는 행동 패턴이다. 객체지향 프로그래밍에서 클라이언트가 직접 대상 객체를 활용하지 않고 **대리인 객체**를 거쳐서 추가 로직을 수행하고 그제야 대상 객체에 접근하게 된다.
 
-![img.png](img.png)
+![img.png](../../../../../resources/static/img.png)
 
 프록시 패턴이 필요한 예시로는 아래와 같다.
 
@@ -184,7 +184,7 @@ class Client {
 
 #### (5) 원격 프록시
 
-![img_1.png](img_1.png)
+![img_1.png](../../../../../resources/static/img_1.png)
 
 - 여기서 말하는 원격은, **네트워크를 통해 다른 시스템에 위치**함을 의미
 - 즉, 네트워크를 통해 다른 시스템에 위치한 객체에 접근할 수 있도록 클라이언트와 객체 간의 프록시 역할을 하는 구조
@@ -194,7 +194,7 @@ class Client {
 
 #### (6) 캐싱 프록시
 
-![img_2.png](img_2.png)
+![img_2.png](../../../../../resources/static/img_2.png)
 
 - 동일한 요청이 반복해서 들어올 때, 해당 데이터를 캐싱하여 반환하면서 네트워크 요청 비용 절감
 - 클라이언트는 캐싱 데이터를 가지고 왔는지, 직접 데이터를 가지고 왔는지 알 필요가 없음
@@ -454,13 +454,76 @@ AOP 자체가 횡단 관심사를 프록시 패턴을 기반으로 묶어버리�
 
 참고로 포인트컷은 `&&` 연산자 혹은 `||` 연산자를 같이 활용하여 더 복잡한 조건을 정의할 수도 있다.
 
-### 2) MethodInterceptor 구현체 기반 어드바이스 구현
+### 2) MethodInterceptor 구현체 기반 AOP 구현
 
+스프링에서는 기본적으로 `MethodInterceptor` 인터페이스의 `invoke()` 메소드를 오버라이딩하여 어드바이스를 구현할 수 있다.
 
+```java
+@Slf4j
+@Component
+public class TimeAdvice implements MethodInterceptor {
+    @Override
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        log.info("TimeAdvice.invoke() 실행");
+        long start = System.nanoTime(); // 메소드 실행 전, 실행시간 기록
 
-### 3) AspectJ 기반 어드바이스 구현
+        Object target = invocation.proceed(); // 메소드 실행
+
+        long end = System.nanoTime();
+        log.info("TimeAdvice.invoke() 종료, 실행 시간 {} ns", end - start); // 메소드 실행 후, 실행시간 기록
+
+        return target; // 메소드 실행 결과 반환
+    }
+}
+```
+
+포인트컷은 별도의 설정 클래스를 생성해서 어드바이스 적용 범위를 정의할 수 있다.
+
+```java
+@Slf4j
+@Configuration
+@RequiredArgsConstructor
+public class AopProxyConfig {
+
+    private final TimeAdvice timeAdvice;
+
+    @Bean
+    public Advisor advisor1() {
+        // 수동 포인트컷 작성
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        pointcut.setExpression("execution(void com.example.persistenceContext.aop.AopService.save(..))");
+
+        return new DefaultPointcutAdvisor(pointcut, timeAdvice);
+    }
+}
+```
+
+### 3) AspectJ 기반 AOP 구현
+
+AOP 클래스를 AspectJ 기반으로 구현하려면 `@Aspect` 어노테이션을 할당하여 내부 메소드에 AspectJ 관련 어노테이션을 할당하여 정의한다.
+
+```java
+@Slf4j
+@Aspect
+@Component
+public class LogAspectAdvice {
+    @Around("execution(void com.example.persistenceContext.aop.AopService.find(..))")
+    public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
+        String message = joinPoint.getSignature().toShortString(); // 메소드 서명(이름, 매개변수 등) 갖고오기
+        log.info("실행 메소드를 찾기 위한 ProceedingJoinPoint 객체 메소드 기반 조회");
+
+        Object result = joinPoint.proceed(); // 메소드 실행
+
+        log.info("실행 메소드 정체: {}", message); // 실행된 메소드의 결과 출력
+
+        return result; // 메소드 실행 결과 반환
+    }
+}
+```
 
 ### 4) 적용 결과 확인
+
+![img_3.png](../../../../../resources/static/img_3.png)
 
 ### 5) JPA 의존성과의 연관성
 
