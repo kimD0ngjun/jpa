@@ -40,12 +40,13 @@ public class HumanController {
     @GetMapping("/transaction")
     public ResponseEntity<String> transaction() {
         String with = transactionService.updateWithTransaction(2L);
+        String check1 = transactionService.check();
         String without = transactionService.updateWithoutTransaction(2L);
-        String check = transactionService.check();
+        String check2 = transactionService.check();
 
         String result = "\n* 트랜잭션 부여 :\n" +
-                with + "\n\n* 트랜잭션 미부여 :\n" +
-                without + "\n" + check;
+                with + check1 + "\n\n* 트랜잭션 미부여 :\n" +
+                without + check2;
 
         System.out.println(result);
         return ResponseEntity.status(HttpStatus.OK).body(result);

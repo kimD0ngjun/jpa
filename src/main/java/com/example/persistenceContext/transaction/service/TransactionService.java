@@ -29,7 +29,7 @@ public class TransactionService {
         String sql = "select h.name from human h where h.id = 2";
         String check = jdbcTemplate.queryForObject(sql, String.class);
 
-        return "\n* 실제 결과 : " + check;
+        return "\n- 실제 결과 : " + check;
     }
 
     private String getString(Long id) {
