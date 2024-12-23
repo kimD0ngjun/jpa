@@ -1,8 +1,8 @@
-package com.example.persistenceContext.objectpool.controller;
+package com.example.persistenceContext.transaction.controller;
 
-import com.example.persistenceContext.objectpool.entity.Human;
-import com.example.persistenceContext.objectpool.service.ServiceA;
-import com.example.persistenceContext.objectpool.service.ServiceB;
+import com.example.persistenceContext.transaction.entity.Human;
+import com.example.persistenceContext.transaction.service.ServiceA;
+import com.example.persistenceContext.transaction.service.ServiceB;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
