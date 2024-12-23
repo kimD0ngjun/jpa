@@ -41,10 +41,11 @@ public class HumanController {
     public ResponseEntity<String> transaction() {
         String with = transactionService.updateWithTransaction(2L);
         String without = transactionService.updateWithoutTransaction(2L);
+        String check = transactionService.check();
 
-        String result = "\n트랜잭션 부여 :\n" +
-                with + "\n\n트랜잭션 미부여 :\n" +
-                without;
+        String result = "\n* 트랜잭션 부여 :\n" +
+                with + "\n\n* 트랜잭션 미부여 :\n" +
+                without + "\n" + check;
 
         System.out.println(result);
         return ResponseEntity.status(HttpStatus.OK).body(result);
