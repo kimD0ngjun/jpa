@@ -2,9 +2,11 @@ package com.example.persistenceContext.idea.entity;
 
 import com.example.persistenceContext.idea.annotation.ImmutableEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @ImmutableEntity
 @NoArgsConstructor
 public class Message {
