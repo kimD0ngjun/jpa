@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
@@ -144,5 +145,29 @@ public class TransactionTest {
          * 결국 전체 트랜잭션 롤백
          */
         Assertions.assertThrows(UnexpectedRollbackException.class, () -> manager.commit(outer));
+    }
+
+    @DisplayName("REQUIRES_NEW : 외부 트랜잭션과 내부 트랜잭션 완전 분리")
+    @Test
+    void transactionPropagationRequiresNew() {
+        log.info("외부 트랜잭션 시작");
+        TransactionStatus outer = manager.getTransaction(new DefaultTransactionAttribute());
+        log.info("outer.isNewTransaction()={}", outer.isNewTransaction());
+
+        log.info("내부 트랜잭션 시작");
+        DefaultTransactionAttribute attribute = new DefaultTransactionAttribute();
+        attribute.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        /**
+         * 기존 트랜잭션에 참여하지 않고 새로운 트랜잭션 생성
+         * 현재 실행 중인 외부 트랜잭션은 일시 강제 중단(트랜잭션 컨텍스트에서 제거)됐다가 다시 재개
+         */
+        TransactionStatus inner = manager.getTransaction(attribute);
+        log.info("inner.isNewTransaction()={}", inner.isNewTransaction());
+
+        log.info("내부 트랜잭션 롤백");
+        manager.rollback(inner);
+
+        log.info("외부 트랜잭션 커밋");
+        manager.commit(outer);
     }
 }
