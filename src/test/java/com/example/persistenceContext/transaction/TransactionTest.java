@@ -1,4 +1,4 @@
-package com.example.nPlusOne.persistenceContext.transaction;
+package com.example.persistenceContext.transaction;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
