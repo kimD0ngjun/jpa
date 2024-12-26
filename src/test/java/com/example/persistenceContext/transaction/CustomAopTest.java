@@ -15,6 +15,6 @@ public class CustomAopTest {
     @DisplayName("AOP 동작 디버깅 테스트")
     @Test
     void debug() {
-
+        messageService.findById(1L);
     }
 }
