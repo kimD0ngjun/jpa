@@ -181,4 +181,13 @@ public class Post {
 
 <img width="80%" alt="큐클래스수정" src="https://github.com/user-attachments/assets/d5d74aca-4984-405a-8aba-fd900f35a3d1" />
 
+### (3) 실행 테스트
+
+실행 결과, `genrated` 패키지에 엔티티 패키지 구조대로 큐클래스들이 생성\
+다만 거기서 `java.lang.Exception: exception just for purpose of providing stack trace` 예외가 발생\
+이것에 대한 해결책은 https://mirr-coding.tistory.com/66 링크 참조
+
+추가로 `src`의 `genrated` 패키지에 큐클래스가 생성됐다고 해서 달라지는 것은 없음\
+엔티티 클래스의 수정이 발생하면 `./gradlew clean compileJava` 후, 재실행하면 그것에 맞춰 큐클래스도 수정
+
 # 3. QueryDSL 예제 연습
