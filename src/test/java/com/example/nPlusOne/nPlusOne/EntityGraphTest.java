@@ -1,8 +1,8 @@
 package com.example.nPlusOne.nPlusOne;
 
-import com.example.nPlusOne.service.AService;
-import com.example.nPlusOne.service.EntityGraphService;
-import com.example.nPlusOne.service.OneService;
+import com.example.jpa.nPlusOne.service.AService;
+import com.example.jpa.nPlusOne.service.EntityGraphService;
+import com.example.jpa.nPlusOne.service.OneService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

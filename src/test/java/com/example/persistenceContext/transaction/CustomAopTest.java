@@ -1,6 +1,6 @@
 package com.example.persistenceContext.transaction;
 
-import com.example.persistenceContext.idea.service.MessageService;
+import com.example.jpa.persistenceContext.idea.service.MessageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
