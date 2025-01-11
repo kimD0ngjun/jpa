@@ -1,7 +1,7 @@
-package com.example.persistenceContext.objectpool.service;
+package com.example.persistenceContext.transaction.service;
 
-import com.example.persistenceContext.objectpool.entity.Human;
-import com.example.persistenceContext.objectpool.repository.HumanRepository;
+import com.example.persistenceContext.transaction.entity.Human;
+import com.example.persistenceContext.transaction.repository.HumanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

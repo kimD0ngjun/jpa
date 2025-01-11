@@ -1,8 +1,9 @@
-package com.example.persistenceContext.objectpool.controller;
+package com.example.persistenceContext.transaction.controller;
 
-import com.example.persistenceContext.objectpool.entity.Human;
-import com.example.persistenceContext.objectpool.service.ServiceA;
-import com.example.persistenceContext.objectpool.service.ServiceB;
+import com.example.persistenceContext.transaction.entity.Human;
+import com.example.persistenceContext.transaction.service.ServiceA;
+import com.example.persistenceContext.transaction.service.ServiceB;
+import com.example.persistenceContext.transaction.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ public class HumanController {
 
     private final ServiceA serviceA;
     private final ServiceB serviceB;
+    private final TransactionService transactionService;
 
     /**
      * 호출 시점이 곧 트랜잭션, 즉 한 번 호출할 때 serviceA와 관련된 트랜잭션과 serviceB와 관련된 트랜잭션은
@@ -30,6 +32,21 @@ public class HumanController {
         String result = "humanA : " +
                 humanA.hashCode() + "\nhumanB : " +
                 humanB.hashCode() + "\nresult : " + value;
+
+        System.out.println(result);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/transaction")
+    public ResponseEntity<String> transaction() {
+        String with = transactionService.updateWithTransaction(2L);
+        String check1 = transactionService.check();
+        String without = transactionService.updateWithoutTransaction(2L);
+        String check2 = transactionService.check();
+
+        String result = "\n* 트랜잭션 부여 :\n" +
+                with + check1 + "\n\n* 트랜잭션 미부여 :\n" +
+                without + check2;
 
         System.out.println(result);
         return ResponseEntity.status(HttpStatus.OK).body(result);
