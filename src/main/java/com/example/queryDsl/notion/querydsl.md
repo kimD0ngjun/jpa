@@ -28,3 +28,88 @@ Java 기반의 **타입 안정성 기반** SQL, JPQL, MongoDB, JDO 등을 작성
 
 위의 특징들을 직접 실습을 통해 활용해볼 예정
 
+# 2. QueryDSL 설정
+
+## 1) 개발 환경
+
+>- 자바 모듈 버전 : OpenJDK 21
+>- 프레임워크 : Spring Boot 3.4
+>- 빌드 환경 : Gradle
+>- 주요 의존성 : Spring Data JPA
+>- RDBMS : MySQL
+>- IDE : 인텔리제이 얼티메이트 에디션
+
+## 2) build.gradle 설정
+
+### (1) QueryDSL 버전 변수 세팅
+
+```groovy
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+```
+
+### (2) QueryDSL 의존성 추가
+
+```groovy
+dependencies {
+    // querydsl 추가(스프링부트 3 이상에서의 QueryDSL 패키지 정의)
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+}
+```
+
+스프링부트 3 이상에서는 `jakarta` 패키지를 사용한다. 또한, 어노테이션 프로세싱 툴(APT)를 통해 Q클래스를 생성해야 한다.
+
+### (3) QueryDSL 소스 코드 경로 세팅
+
+```groovy
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDirs += [ querydslDir ]
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+clean.doLast {
+    file(querydslDir).deleteDir()
+}
+```
+
+Q클래스 생성 경로를 `querydslDir` 변수에 담는다. 이때 그 경로는 `build/generated/querydsl`이다. 또한 Q클래스를 포함한 코드 생성 경로룰 소스 경로에 추가하고(`sourceSets` 블록) 어노테이션 프로세서가 생성한 코드를 `querydslDir`에 저장한다(`JavaCompile` 태스크). 마지막으로 `gradle clean` 실행 시, 생성된 Q클래스를 전부 제거한다.
+
+### (4) 설정 완료 후 작동 순서
+
+>1. `gradle build` 실행
+>2. `annotationProcessor`가 엔티티 기반으로 **Q클래스**를 생성
+>3. `build/generated/querydsl` 경로에 Q클래스 파일이 생성
+>4. `sourceSets`에 해당 경로를 포함시켜 컴파일 시점에 QueryDSL을 사용 가능
+
+## 3) 기타 추가 설정
+
+### (1) 인텔리제이 어노테이션 프로세서 세팅
+
+<img width="80%" alt="인텔리제이어노테이션프로세서세팅" src="https://github.com/user-attachments/assets/3cdb737a-eeab-4fd5-bb24-99054ef99dd3" />
+
+이 설정은 **어노테이션 프로세서**를 Gradle 자체가 아닌 **인텔리제이 자체 빌드 시스템에서 활성화**하도록 설정한 것이다.
+
+### (2) Gradle 기반 자바 컴파일
+
+<img width="65%" alt="gradleQ클래스생성" src="https://github.com/user-attachments/assets/944d88d2-1bd0-4bcf-b782-d4f750b2ead7" />
+
+`querydsl-apt`를 Gradle에서 직접 사용해서 지정했던 경로에 Q클래스를 생성한다.
+
+### (3) build 패키지 내부 확인
+
+<img width="65%" alt="Q클래스생성확인" src="https://github.com/user-attachments/assets/78be7bd9-0817-4b65-afc4-25951cb67236" />
+
+`generated/querydsl/com/example/엔티티 패키지들` 하위에 엔티티 클래스를 기반으로 Q클래스가 생성된 것을 확인할 수 있다.
+
+# 3. QueryDSL 예제 연습
