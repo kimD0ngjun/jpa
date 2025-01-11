@@ -104,7 +104,7 @@ Q클래스 생성 경로를 `querydslDir` 변수에 담는다. 이때 그 경로
 
 <img width="65%" alt="gradleQ클래스생성" src="https://github.com/user-attachments/assets/944d88d2-1bd0-4bcf-b782-d4f750b2ead7" />
 
-`querydsl-apt`를 Gradle에서 직접 사용해서 지정했던 경로에 Q클래스를 생성한다.
+`querydsl-apt`를 Gradle에서 직접 사용해서 지정했던 경로에 Q클래스를 생성한다. 새로운 엔티티 클래스가 추가될 때마다 빌드를 해주면 자동으로 경로에 맞춰 Q클래스가 추가된다.
 
 ### (3) build 패키지 내부 확인
 
