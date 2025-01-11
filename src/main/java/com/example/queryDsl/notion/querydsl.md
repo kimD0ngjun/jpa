@@ -112,4 +112,39 @@ Q클래스 생성 경로를 `querydslDir` 변수에 담는다. 이때 그 경로
 
 `generated/querydsl/com/example/엔티티 패키지들` 하위에 엔티티 클래스를 기반으로 Q클래스가 생성된 것을 확인할 수 있다.
 
+## 4) 테스트 생성 및 수정 확인
+
+### (1) 큐클래스 생성 테스트
+
+임시 엔티티 클래스를 생성해서, 터미널에서 `./gradlew compileJava` 명령어를 실행해서 `build` 패키지의 해당 경로에서 큐클래스가 생성되는지 확인한다.
+
+```java
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
+    private Long id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "content")
+    private String content;
+
+    public Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+}
+```
+
+<img width="80%" alt="터미널 :gradlew compileJava기반생성" src="https://github.com/user-attachments/assets/2c09722d-d98b-4110-bef2-98ebb9f19900" />
+
+<img width="80%" alt="큐클래스확인" src="https://github.com/user-attachments/assets/6a412f3e-5b2a-45a3-9af5-2dcadccd570d" />
+
+
 # 3. QueryDSL 예제 연습
