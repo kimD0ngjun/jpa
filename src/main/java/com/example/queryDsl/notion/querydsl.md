@@ -146,5 +146,12 @@ public class Post {
 
 <img width="80%" alt="큐클래스확인" src="https://github.com/user-attachments/assets/6a412f3e-5b2a-45a3-9af5-2dcadccd570d" />
 
+### (2) 큐클래스 수정 테스트
+
+엔티티 클래스를 수정한 경우, `./gradlew clean compileJava` 명령어를 기반으로 큐클래스를 전부 지우고 다시 컴파일을 수행한다.
+
+```java
+
+```
 
 # 3. QueryDSL 예제 연습

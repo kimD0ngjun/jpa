@@ -18,6 +18,9 @@ public class Post {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "category")
+    private String category;
+
     @Column(name = "content")
     private String content;
 
