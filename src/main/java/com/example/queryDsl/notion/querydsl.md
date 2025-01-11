@@ -151,7 +151,34 @@ public class Post {
 엔티티 클래스를 수정한 경우, `./gradlew clean compileJava` 명령어를 기반으로 큐클래스를 전부 지우고 다시 컴파일을 수행한다.
 
 ```java
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
+    private Long id;
 
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "category")
+    private String category;
+    
+    @Column(name = "content")
+    private String content;
+
+    public Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+}
 ```
+
+<img width="80%" alt="터미널기반클린컴파일자바" src="https://github.com/user-attachments/assets/8ac083e4-34da-4324-a7c4-6a9852bb1d04" />
+
+<img width="80%" alt="큐클래스수정" src="https://github.com/user-attachments/assets/d5d74aca-4984-405a-8aba-fd900f35a3d1" />
 
 # 3. QueryDSL 예제 연습
