@@ -18,12 +18,6 @@ public class Post {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "sub_title")
-    private String subTitle;
-
-    @Column(name = "category")
-    private String category;
-
     @Column(name = "content")
     private String content;
 

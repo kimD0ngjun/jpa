@@ -19,13 +19,9 @@ public class QPost extends EntityPathBase<Post> {
 
     public static final QPost post = new QPost("post");
 
-    public final StringPath category = createString("category");
-
     public final StringPath content = createString("content");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final StringPath subTitle = createString("subTitle");
 
     public final StringPath title = createString("title");
 
