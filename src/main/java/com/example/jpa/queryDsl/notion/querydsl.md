@@ -190,14 +190,32 @@ public class Post {
 
 실행 결과, `genrated` 패키지에 엔티티 패키지 구조대로 큐클래스들이 생성\
 다만 거기서 `java.lang.Exception: exception just for purpose of providing stack trace` 예외가 발생\
-이것에 대한 해결책은 https://mirr-coding.tistory.com/66 링크 참조
+
+이것은 `UnknownNamedQueryException`인데 앱 실행에는 영향을 주지 않는다. 다만 거슬릴 경우를 대비해 로깅 레벨을 조정하는 방식으로 없앨 수 있다.
+
+```yml
+# https://mirr-coding.tistory.com/66 참고
+logging:
+  level:
+    org:
+      hibernate:
+        # QueryDSL UnknownNamedQueryException 해결을 위한 로깅 조치
+        resource:
+          transaction:
+            backend:
+              jdbc:
+                internal:
+                  JdbcResourceLocalTransactionCoordinatorImpl: INFO
+```
 
 추가로 `src`의 `genrated` 패키지에 큐클래스가 생성됐다고 해서 달라지는 것은 없음\
 엔티티 클래스의 수정이 발생하면 `./gradlew clean compileJava` 후, 재실행하면 그것에 맞춰 큐클래스도 수정
 
 # 3. QueryDSL 예제 연습
 
-## 1) 엔티티 및 DAO 생성
+## 1) 기본 예제
+
+### (1) 엔티티 및 DAO 생성
 
 엔티티는 다음과 같으며, 추후 연관관계 세팅 역시 이뤄질 예정이다.
 
@@ -237,3 +255,51 @@ public class Post {
 위와 같이 dao를 구분 구현한 이유는 다음과 같다. 공통적으로 애플리케이션 기능에 특화된 메소드들을 `CustomPostRepository` 인터페이스에 공통 메소드들을 정의하고 이것을 JPA dao 구현 메소드와 QueryDSL dao 구현 메소드로 분류 구현한다.
 
 이렇게 구현하는 이유는, JPA는 `PostRepository`(즉, JPA 관련 `Repository` 인터페이스 상속 구현)에 대해서는 알고 있지만, QueryDSL 관련 dao에 대해서는 모르기 때문에 QueryDSL 전용 코드를 별개로 구현해야 하는 것이다. JPA만 사용했을 때, `Repository`에 별 신경 안 써도 웬만한 기능들을 쓸 수 있었던 것에 대해 생각해 보자.
+
+### (2) 컨트롤러 생성 및 확인
+
+dao 상속 및 활용 구조는 다음과 같다.
+
+```bash
+
+CustomPostRepository # 추상 사용자 정의 메소드
+    ├── PostRepository # CustomPostRepository 구현 - QueryDSL 기반 메소드 사용은 얘를 통해 이뤄짐
+    └── PostRepositoryImpl # CustomPostRepository 구현 - JPAQueryFactory 활용한 QueryDSL 메소드
+```
+
+위의 구조에 따라서 실제 서비스 코드에서 사용할 dao는 `PostRepository`가 된다. 예제 코드를 짜고 실제 쿼리 출력이 어떻게 되는지 확인해본다.
+
+```java
+@RestController
+@RequiredArgsConstructor
+public class QueryDslController {
+
+    private final PostRepository postRepository;
+
+    @GetMapping("/find/{id}")
+    public Post findPostById(@PathVariable("id") Long id) {
+        return postRepository.getQslPost(id);
+    }
+}
+```
+
+<img width="70%" alt="스크린샷 2025-01-12 오후 7 26 09" src="https://github.com/user-attachments/assets/7548bd30-376d-4675-9266-fe6e60c0614f" />
+
+히카리풀에 출력된 쿼리문을 확인해보면 다음과 같다.
+
+```bash
+2025-01-12T19:16:26.516+09:00 DEBUG 8815 --- [jpa] [nio-8080-exec-1] org.hibernate.SQL                        : /* select post
+from Post post
+where post.id = ?1 */ select p1_0.post_id,p1_0.content,p1_0.title from post p1_0 where p1_0.post_id=?
+Hibernate: /* select post
+from Post post
+where post.id = ?1 */ select p1_0.post_id,p1_0.content,p1_0.title from post p1_0 where p1_0.post_id=?
+```
+
+현재 QueryDSL을 JPA와 결합한 상태에서 히카리풀을 확인하면 쿼리가 두 번 로깅되는 것을 확인할 수 있다.
+
+QueryDSL은 **쿼리 작성**을 맡으며 hibernate가 실제 데이터베이스와의 통신(즉, **쿼리 실행**)을 맡는다. 기존에는 hibernate가 쿼리 작성과 실행을 전부 도맡았다면, 현재는 QueryDSL이 **복잡한 기능(where, group by, join)** 을 포함해서 쿼리 작성을 맡고 hibernate가 이해할 수 있는 SQL로 변환되어 실행된다. 이때 이 SQL 변환을 `JPAQueryFactory`가 맡게 된다.
+
+즉, 저 두 개의 쿼리 출력은 각각 QueryDSL이 작성한 JPQL 쿼리와 hibernate가 실행하는 쿼리다.
+
+## 2) 다른 예제
