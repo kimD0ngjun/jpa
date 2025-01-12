@@ -196,3 +196,44 @@ public class Post {
 엔티티 클래스의 수정이 발생하면 `./gradlew clean compileJava` 후, 재실행하면 그것에 맞춰 큐클래스도 수정
 
 # 3. QueryDSL 예제 연습
+
+## 1) 엔티티 및 DAO 생성
+
+엔티티는 다음과 같으며, 추후 연관관계 세팅 역시 이뤄질 예정이다.
+
+```java
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
+    private Long id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "content")
+    private String content;
+
+    public Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+}
+```
+
+그리고 이에 맞춰서 dao를 생성하는데, JPA 기본 CRUD에 맞춘 `JpaRepository` 상속 인터페이스 dao와 QueryDSL 전용 dao를 생성한다.
+
+```bash
+.
+├── PostRepository.java               # JpaRepository 인터페이스 (기본 CRUD 제공)
+├── CustomPostRepository.java         # 사용자 정의 쿼리 메서드 인터페이스
+└── PostRepositoryImpl.java           # CustomPostRepository 구현체 (QueryDSL 사용)
+```
+
+위와 같이 dao를 구분 구현한 이유는 다음과 같다. 공통적으로 애플리케이션 기능에 특화된 메소드들을 `CustomPostRepository` 인터페이스에 공통 메소드들을 정의하고 이것을 JPA dao 구현 메소드와 QueryDSL dao 구현 메소드로 분류 구현한다.
+
+이렇게 구현하는 이유는, JPA는 `PostRepository`(즉, JPA 관련 `Repository` 인터페이스 상속 구현)에 대해서는 알고 있지만, QueryDSL 관련 dao에 대해서는 모르기 때문에 QueryDSL 전용 코드를 별개로 구현해야 하는 것이다. JPA만 사용했을 때, `Repository`에 별 신경 안 써도 웬만한 기능들을 쓸 수 있었던 것에 대해 생각해 보자.
