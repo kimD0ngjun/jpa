@@ -1,4 +1,4 @@
-package com.example.jpa.queryDsl;
+package com.example.jpa.queryDsl.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
