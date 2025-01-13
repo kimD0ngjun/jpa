@@ -1,5 +1,6 @@
 package com.example.jpa.queryDsl.controller;
 
+import com.example.jpa.queryDsl.dto.PostCountDTO;
 import com.example.jpa.queryDsl.entity.Post;
 import com.example.jpa.queryDsl.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,11 @@ public class QueryDslController {
     @GetMapping("/find/{id}")
     public Post findPostById(@PathVariable("id") Long id) {
         return postRepository.getQslPost(id);
+    }
+
+    @GetMapping("/find1")
+    public List<PostCountDTO> getQslPostsByTitleGroupingAndHaving() {
+        return postRepository.getQslPostsByTitleGroupingAndHaving();
     }
 
     @GetMapping("/find2")

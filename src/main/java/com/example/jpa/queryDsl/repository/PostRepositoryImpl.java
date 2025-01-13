@@ -1,5 +1,6 @@
 package com.example.jpa.queryDsl.repository;
 
+import com.example.jpa.queryDsl.dto.PostCountDTO;
 import com.example.jpa.queryDsl.entity.Post;
 import com.example.jpa.queryDsl.entity.QPost;
 import com.querydsl.core.Tuple;
@@ -38,21 +39,25 @@ public class PostRepositoryImpl implements CustomPostRepository{
      * FROM post
      * WHERE content LIKE '%apple%'
      * GROUP BY title
-     * HAVING COUNT(*) > 1
+     * HAVING COUNT(*) > 0
      * ORDER BY post_count DESC;
      */
     @Override
-    public List<Tuple> getQslPostsByTitleGroupingAndHaving() {
+    public List<PostCountDTO> getQslPostsByTitleGroupingAndHaving() {
         QPost qpost = QPost.post;
 
-        return queryFactory
+        List<Tuple> result = queryFactory
                 .select(qpost.title, qpost.count()) // SELECT title, COUNT(*) AS post_count
                 .from(qpost) // FROM post
                 .where(qpost.content.contains("apple")) // WHERE content LIKE '%apple%'
                 .groupBy(qpost.title) // GROUP BY title
-                .having(qpost.count().gt(1)) // HAVING COUNT(*) > 1
+                .having(qpost.count().gt(0)) // HAVING COUNT(*) > 0
                 .orderBy(qpost.count().desc()) // ORDER BY post_count DESC;
                 .fetch();
+
+        return result.stream()
+                .map(e -> new PostCountDTO(e.get(qpost.title), e.get(qpost.count())))
+                .toList();
     }
 
 //    /**

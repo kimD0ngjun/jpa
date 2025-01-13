@@ -1,5 +1,6 @@
 package com.example.jpa.queryDsl.repository;
 
+import com.example.jpa.queryDsl.dto.PostCountDTO;
 import com.example.jpa.queryDsl.entity.Post;
 import com.querydsl.core.Tuple;
 
@@ -14,7 +15,7 @@ public interface CustomPostRepository {
 
     // content 필드에 "apple"이 포함된 레코드들 중
     // 해당 레코드들의 title이 같은 게 2개 이상 존재하면 title 별로 그룹화하고 속하는 title 수가 많은 순서로 정렬
-    List<Tuple> getQslPostsByTitleGroupingAndHaving();
+    List<PostCountDTO> getQslPostsByTitleGroupingAndHaving();
 
     // content가 같은 레코드가 2개 이상이면
     // 해당 content의 레코드를 title 오름차순 기준으로 정렬 반환
