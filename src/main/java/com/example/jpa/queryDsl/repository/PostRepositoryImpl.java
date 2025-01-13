@@ -39,7 +39,7 @@ public class PostRepositoryImpl implements CustomPostRepository{
      * FROM post
      * WHERE content LIKE '%apple%'
      * GROUP BY title
-     * HAVING COUNT(*) > 0
+     * HAVING COUNT(*) > 1
      * ORDER BY post_count DESC;
      */
     @Override
@@ -51,7 +51,7 @@ public class PostRepositoryImpl implements CustomPostRepository{
                 .from(qpost) // FROM post
                 .where(qpost.content.contains("apple")) // WHERE content LIKE '%apple%'
                 .groupBy(qpost.title) // GROUP BY title
-                .having(qpost.count().gt(0)) // HAVING COUNT(*) > 0
+                .having(qpost.count().gt(1)) // HAVING COUNT(*) > 1
                 .orderBy(qpost.count().desc()) // ORDER BY post_count DESC;
                 .fetch();
 
