@@ -26,7 +26,7 @@ public class QueryDslController {
     }
 
     @GetMapping("/find3/{limit}")
-    public List<Post> getQslDistinctPostsLimited(int limit) {
+    public List<Post> getQslDistinctPostsLimited(@PathVariable("limit") int limit) {
         return postRepository.getQslDistinctPostsLimited(limit);
     }
 
