@@ -1,10 +1,14 @@
 package com.example.jpa.queryDsl.repository;
 
+import com.example.jpa.queryDsl.dto.GroupCountDTO;
 import com.example.jpa.queryDsl.dto.PostCountDTO;
 import com.example.jpa.queryDsl.entity.Post;
 import com.example.jpa.queryDsl.entity.QPost;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -150,28 +154,44 @@ public class PostRepositoryImpl implements CustomPostRepository{
     public List<Tuple> getQslPostsWithConditionalGrouping() {
         QPost qpost = QPost.post;
 
-        return queryFactory
-                .select(
-                        new CaseBuilder()
-                                .when(qpost.content.contains("apple")).then("APPLE GROUP")
-                                .when(qpost.content.contains("banana")).then("BANANA GROUP")
-                                .otherwise("OTHER GROUP"),
-                        qpost.count()
-                )
-                .from(qpost)
-                .groupBy(qpost.content)
-                .orderBy(qpost.count().desc())
-                .fetch();
+        // 왜 안 될까... group by와 mysql 관련 무슨 에러 뜨는 거 같은데, 아직 QueryDSL 문법을 잘 모르게씀...
+//        List<Tuple> result = queryFactory.
+//                select(
+//                        Projections.fields(Post.class, new CaseBuilder().when(
+//
+//                        ))
+//                )
+//                .from(qpost)
+//                .groupBy(
+//                        new CaseBuilder()
+//                                .when(qpost.content.like("%apple%")).then("APPLE GROUP")
+//                                .when(qpost.content.like("%banana%")).then("BANANA GROUP")
+//                                .otherwise("OTHER GROUP")
+//                )
+//                .orderBy(qpost.count().desc())
+//                .fetch();
+
+        return List.of();
     }
 
+//    /**
+//     * SELECT p1.title, p1.content, COUNT(p2.post_id) AS similar_count
+//     * FROM post p1
+//     * JOIN post p2
+//     *     ON p1.content = p2.content AND p1.post_id != p2.post_id
+//     * WHERE p1.content LIKE '%apple%' OR p1.content LIKE '%banana%'
+//     * GROUP BY p1.title, p1.content
+//     * HAVING COUNT(p2.post_id) > 2
+//     * ORDER BY similar_count DESC;
+//     */
     /**
-     * SELECT p1.title, p1.content, COUNT(p2.id) AS similar_count
+     * SELECT p1.title, p1.content, COUNT(p2.title) AS similar_count
      * FROM post p1
      * JOIN post p2
-     *     ON p1.content = p2.content AND p1.id != p2.id
+     *     ON p1.content = p2.content AND p1.title != p2.title
      * WHERE p1.content LIKE '%apple%' OR p1.content LIKE '%banana%'
      * GROUP BY p1.title, p1.content
-     * HAVING COUNT(p2.id) > 2
+     * HAVING COUNT(p2.title) > 2
      * ORDER BY similar_count DESC;
      */
     @Override

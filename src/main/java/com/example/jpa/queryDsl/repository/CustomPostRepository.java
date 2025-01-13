@@ -1,5 +1,6 @@
 package com.example.jpa.queryDsl.repository;
 
+import com.example.jpa.queryDsl.dto.GroupCountDTO;
 import com.example.jpa.queryDsl.dto.PostCountDTO;
 import com.example.jpa.queryDsl.entity.Post;
 import com.querydsl.core.Tuple;

@@ -1,8 +1,10 @@
 package com.example.jpa.queryDsl.controller;
 
+import com.example.jpa.queryDsl.dto.GroupCountDTO;
 import com.example.jpa.queryDsl.dto.PostCountDTO;
 import com.example.jpa.queryDsl.entity.Post;
 import com.example.jpa.queryDsl.repository.PostRepository;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,5 +38,8 @@ public class QueryDslController {
         return postRepository.getQslDistinctPostsLimited(limit);
     }
 
-
+    @GetMapping("/find4")
+    public List<Tuple> getQslPostsWithConditionalGrouping() {
+        return postRepository.getQslPostsWithConditionalGrouping();
+    }
 }
