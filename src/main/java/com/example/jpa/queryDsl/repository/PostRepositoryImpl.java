@@ -3,6 +3,7 @@ package com.example.jpa.queryDsl.repository;
 import com.example.jpa.queryDsl.entity.Post;
 import com.example.jpa.queryDsl.entity.QPost;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -40,7 +41,16 @@ public class PostRepositoryImpl implements CustomPostRepository{
      */
     @Override
     public List<Tuple> getQslPostsByTitleGroupingAndHaving() {
-        return List.of();
+        QPost qpost = QPost.post;
+
+        return queryFactory
+                .select(qpost.title, qpost.count()) // SELECT title, COUNT(*) AS post_count
+                .from(qpost) // FROM post
+                .where(qpost.content.contains("apple")) // WHERE content LIKE '%apple%'
+                .groupBy(qpost.title) // GROUP BY title
+                .having(qpost.count().gt(1)) // HAVING COUNT(*) > 1
+                .orderBy(qpost.count().desc()) // ORDER BY post_count DESC;
+                .fetch();
     }
 
     /**
@@ -56,7 +66,19 @@ public class PostRepositoryImpl implements CustomPostRepository{
      */
     @Override
     public List<Post> getQslPostsWithInnerJoinAndSubquery() {
-        return List.of();
+        QPost qpost = QPost.post;
+        QPost subQpost = new QPost("subPost");
+
+        return queryFactory
+                .select(qpost) // SELECT p1.title, p1.content
+                .from(qpost) // FROM post p1
+                .join(subQpost)
+                .on(qpost.content.eq(subQpost.content)
+                        .and(qpost.id.ne(subQpost.id)))
+                .groupBy(qpost.content)
+                .having(subQpost.count().gt(1))
+                .orderBy(qpost.title.asc())
+                .fetch();
     }
 
     /**
@@ -67,7 +89,15 @@ public class PostRepositoryImpl implements CustomPostRepository{
      */
     @Override
     public List<Post> getQslDistinctPostsLimited(int limit) {
-        return List.of();
+        QPost qpost = QPost.post;
+
+        return queryFactory
+                .select(qpost)
+                .distinct()
+                .from(qpost)
+                .orderBy(qpost.title.asc(), qpost.content.desc())
+                .limit(limit)
+                .fetch();
     }
 
     /**
@@ -84,7 +114,20 @@ public class PostRepositoryImpl implements CustomPostRepository{
      */
     @Override
     public List<Tuple> getQslPostsWithConditionalGrouping() {
-        return List.of();
+        QPost qpost = QPost.post;
+
+        return queryFactory
+                .select(
+                        new CaseBuilder()
+                                .when(qpost.content.contains("apple")).then("APPLE GROUP")
+                                .when(qpost.content.contains("banana")).then("BANANA GROUP")
+                                .otherwise("OTHER GROUP"),
+                        qpost.count()
+                )
+                .from(qpost)
+                .groupBy(qpost.content)
+                .orderBy(qpost.count().desc())
+                .fetch();
     }
 
     /**
@@ -99,6 +142,17 @@ public class PostRepositoryImpl implements CustomPostRepository{
      */
     @Override
     public List<Tuple> getQslPostsWithComplexJoinAndGrouping() {
-        return List.of();
+        QPost qpost = QPost.post;
+
+        return queryFactory
+                .select(qpost.title, qpost.content, qpost.count())
+                .from(qpost)
+                .join(qpost)
+                .on(qpost.content.eq(qpost.content).and(qpost.id.ne(qpost.id)))
+                .where(qpost.content.contains("apple").or(qpost.content.contains("banana")))
+                .groupBy(qpost.title, qpost.content)
+                .having(qpost.count().gt(2))
+                .orderBy(qpost.count().desc())
+                .fetch();
     }
 }
