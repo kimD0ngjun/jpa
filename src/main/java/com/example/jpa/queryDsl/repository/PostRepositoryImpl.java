@@ -4,6 +4,8 @@ import com.example.jpa.queryDsl.entity.Post;
 import com.example.jpa.queryDsl.entity.QPost;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -53,31 +55,58 @@ public class PostRepositoryImpl implements CustomPostRepository{
                 .fetch();
     }
 
+//    /**
+//     * SELECT p1.title, p1.content
+//     * FROM post p1
+//     * JOIN (
+//     *     SELECT content
+//     *     FROM post
+//     *     GROUP BY content
+//     *     HAVING COUNT(*) > 1
+//     * ) p2 ON p1.content = p2.content
+//     * ORDER BY p1.title;
+//     */
+
     /**
      * SELECT p1.title, p1.content
      * FROM post p1
-     * JOIN (
-     *     SELECT content
-     *     FROM post
-     *     GROUP BY content
-     *     HAVING COUNT(*) > 1
-     * ) p2 ON p1.content = p2.content
+     * WHERE p1.content IN (
+     *       SELECT content
+     *       FROM post
+     *       GROUP BY content
+     *       HAVING COUNT(*) > 1
+     * )
      * ORDER BY p1.title;
      */
     @Override
     public List<Post> getQslPostsWithInnerJoinAndSubquery() {
+//        QPost qpost = QPost.post;
+//        QPost subQpost = new QPost("subPost");
+//
+//        return queryFactory
+//                .select(qpost) // SELECT p1.title, p1.content
+//                .from(qpost) // FROM post p1
+//                .join(subQpost)
+//                .on(qpost.content.eq(subQpost.content)
+//                        .and(qpost.id.ne(subQpost.id)))
+//                .groupBy(qpost.content)
+//                .having(subQpost.count().gt(1))
+//                .orderBy(qpost.title.asc())
+//                .fetch();
         QPost qpost = QPost.post;
-        QPost subQpost = new QPost("subPost");
+        QPost subQpost = QPost.post; // 서브쿼리 정의
 
+        JPQLQuery<String> subQuery = JPAExpressions.select(subQpost.content)
+                .from(subQpost)
+                .groupBy(subQpost.content)
+                .having(subQpost.content.count().gt(1)); // HAVING COUNT(*) > 1
+
+        // 메인 쿼리
         return queryFactory
-                .select(qpost) // SELECT p1.title, p1.content
-                .from(qpost) // FROM post p1
-                .join(subQpost)
-                .on(qpost.content.eq(subQpost.content)
-                        .and(qpost.id.ne(subQpost.id)))
-                .groupBy(qpost.content)
-                .having(subQpost.count().gt(1))
-                .orderBy(qpost.title.asc())
+                .select(qpost)
+                .from(qpost)
+                .where(qpost.content.in(subQuery)) // JOIN 대신 IN으로 서브쿼리와 연결
+                .orderBy(qpost.title.asc()) // ORDER BY p1.title
                 .fetch();
     }
 

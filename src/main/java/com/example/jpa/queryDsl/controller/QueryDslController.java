@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class QueryDslController {
@@ -17,4 +19,16 @@ public class QueryDslController {
     public Post findPostById(@PathVariable("id") Long id) {
         return postRepository.getQslPost(id);
     }
+
+    @GetMapping("/find2")
+    public List<Post> getQslPostsWithInnerJoinAndSubquery() {
+        return postRepository.getQslPostsWithInnerJoinAndSubquery();
+    }
+
+    @GetMapping("/find3/{limit}")
+    public List<Post> getQslDistinctPostsLimited(int limit) {
+        return postRepository.getQslDistinctPostsLimited(limit);
+    }
+
+
 }
