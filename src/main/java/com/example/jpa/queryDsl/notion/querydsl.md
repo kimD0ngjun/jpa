@@ -302,9 +302,7 @@ QueryDSL은 **쿼리 작성**을 맡으며 hibernate가 실제 데이터베이�
 
 즉, 저 두 개의 쿼리 출력은 각각 QueryDSL이 작성한 JPQL 쿼리와 hibernate가 실행하는 쿼리다.
 
-## 2) 다른 예제
-
-### (1) QueryDSL은 JOIN 문법이 제한적
+## 2) JOIN 문법애 대한 처리
 
 ```java
 //    /**
@@ -362,3 +360,9 @@ QueryDSL은 **쿼리 작성**을 맡으며 hibernate가 실제 데이터베이�
                 .fetch();
     }
 ```
+
+## 3) Tuple에 대한 처리
+
+## 4) CASE WHEN 및 GROUP BY 문법
+
+## 5) 연관관계와 N+1 이슈
