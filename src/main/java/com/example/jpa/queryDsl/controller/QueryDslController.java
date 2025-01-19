@@ -1,9 +1,8 @@
 package com.example.jpa.queryDsl.controller;
 
-import com.example.jpa.queryDsl.dto.GroupCountDTO;
 import com.example.jpa.queryDsl.dto.PostCountDTO;
 import com.example.jpa.queryDsl.entity.Post;
-import com.example.jpa.queryDsl.repository.PostRepository;
+import com.example.jpa.queryDsl.service.PostService;
 import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,35 +15,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QueryDslController {
 
-    private final PostRepository postRepository;
+    private final PostService postService;
 
     @GetMapping("/find/{id}")
     public Post findPostById(@PathVariable("id") Long id) {
-        return postRepository.getQslPost(id);
+        return postService.findPostById(id);
     }
 
     @GetMapping("/find1")
     public List<PostCountDTO> getQslPostsByTitleGroupingAndHaving() {
-        return postRepository.getQslPostsByTitleGroupingAndHaving();
+        return postService.getQslPostsByTitleGroupingAndHaving();
     }
 
     @GetMapping("/find2")
     public List<Post> getQslPostsWithInnerJoinAndSubquery() {
-        return postRepository.getQslPostsWithInnerJoinAndSubquery();
+        return postService.getQslPostsWithInnerJoinAndSubquery();
     }
 
     @GetMapping("/find3/{limit}")
     public List<Post> getQslDistinctPostsLimited(@PathVariable("limit") int limit) {
-        return postRepository.getQslDistinctPostsLimited(limit);
+        return postService.getQslDistinctPostsLimited(limit);
     }
 
     @GetMapping("/find4")
     public List<Tuple> getQslPostsWithConditionalGrouping() {
-        return postRepository.getQslPostsWithConditionalGrouping();
+        return postService.getQslPostsWithConditionalGrouping();
     }
 
     @GetMapping("/find5")
     public List<Tuple> getQslPostsWithComplexJoinAndGrouping() {
-        return postRepository.getQslPostsWithComplexJoinAndGrouping();
+        return postService.getQslPostsWithComplexJoinAndGrouping();
     }
 }
