@@ -174,16 +174,6 @@ public class PostRepositoryImpl implements CustomPostRepository{
         return List.of();
     }
 
-//    /**
-//     * SELECT p1.title, p1.content, COUNT(p2.post_id) AS similar_count
-//     * FROM post p1
-//     * JOIN post p2
-//     *     ON p1.content = p2.content AND p1.post_id != p2.post_id
-//     * WHERE p1.content LIKE '%apple%' OR p1.content LIKE '%banana%'
-//     * GROUP BY p1.title, p1.content
-//     * HAVING COUNT(p2.post_id) > 2
-//     * ORDER BY similar_count DESC;
-//     */
     /**
      * SELECT p1.title, p1.content, COUNT(p2.title) AS similar_count
      * FROM post p1
@@ -191,7 +181,7 @@ public class PostRepositoryImpl implements CustomPostRepository{
      *     ON p1.content = p2.content AND p1.title != p2.title
      * WHERE p1.content LIKE '%apple%' OR p1.content LIKE '%banana%'
      * GROUP BY p1.title, p1.content
-     * HAVING COUNT(p2.title) > 2
+     * HAVING COUNT(p2.title) > 1
      * ORDER BY similar_count DESC;
      */
     @Override
@@ -205,7 +195,7 @@ public class PostRepositoryImpl implements CustomPostRepository{
                 .on(qpost.content.eq(qpost.content).and(qpost.id.ne(qpost.id)))
                 .where(qpost.content.contains("apple").or(qpost.content.contains("banana")))
                 .groupBy(qpost.title, qpost.content)
-                .having(qpost.count().gt(2))
+                .having(qpost.count().gt(1))
                 .orderBy(qpost.count().desc())
                 .fetch();
     }

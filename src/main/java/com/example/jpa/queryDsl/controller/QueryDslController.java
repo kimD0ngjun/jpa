@@ -42,4 +42,9 @@ public class QueryDslController {
     public List<Tuple> getQslPostsWithConditionalGrouping() {
         return postRepository.getQslPostsWithConditionalGrouping();
     }
+
+    @GetMapping("/find5")
+    public List<Tuple> getQslPostsWithComplexJoinAndGrouping() {
+        return postRepository.getQslPostsWithComplexJoinAndGrouping();
+    }
 }

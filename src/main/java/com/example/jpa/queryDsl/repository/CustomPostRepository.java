@@ -33,7 +33,7 @@ public interface CustomPostRepository {
     List<Tuple> getQslPostsWithConditionalGrouping();
 
     // content에 "apple"이나 "banana"가 포함된 게시물
-    // 자기 자신을 제외하고 동일한 content를 가진 다른 게시물이 2개 이상 존재하는 경우
+    // 자기 자신을 제외하고 동일한 content를 가진 다른 게시물이 1개 이상 존재하는 경우
     // title과 content를 반환하면서, 같은 content를 가진 게시물 수를 출력
     // 유사한 게시물이 많은 순서로 정렬
     List<Tuple> getQslPostsWithComplexJoinAndGrouping();
