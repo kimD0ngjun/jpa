@@ -22,7 +22,11 @@ public class QAuthor extends EntityPathBase<Author> {
 
     public static final QAuthor author = new QAuthor("author");
 
+    public final NumberPath<Integer> age = createNumber("age", Integer.class);
+
     public final ListPath<Book, QBook> book = this.<Book, QBook>createList("book", Book.class, QBook.class, PathInits.DIRECT2);
+
+    public final StringPath gender = createString("gender");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 

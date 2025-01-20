@@ -19,6 +19,10 @@ public class Author {
 
     private String name;
 
+    private String gender;
+
+    private Integer age;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Book> book = new ArrayList<>();
 
