@@ -17,4 +17,6 @@ public class BookRepositoryImpl implements CustomBookRepository {
 
         return queryFactory.selectFrom(book).where(book.title.eq(title)).fetchOne();
     }
+
+    // 다양한 조건들
 }
