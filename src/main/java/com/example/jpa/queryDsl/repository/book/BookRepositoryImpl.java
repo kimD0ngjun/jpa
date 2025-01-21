@@ -50,4 +50,15 @@ public class BookRepositoryImpl implements CustomBookRepository {
 //                .where(author.name.eq("Author 7"))
                 .fetch();
     }
+
+    @Override
+    public List<Book> fetchJoin() {
+        QBook book = QBook.book;
+        QAuthor author = QAuthor.author;
+
+        return queryFactory
+                .selectFrom(book)
+                .leftJoin(book.author, author).fetchJoin()
+                .fetch();
+    }
 }

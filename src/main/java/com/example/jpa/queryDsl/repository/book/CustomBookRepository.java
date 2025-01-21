@@ -14,4 +14,7 @@ public interface CustomBookRepository {
 
     // 간단한 조인
     List<Book> leftJoin();
+
+    // N + 1 이슈 해결
+    List<Book> fetchJoin();
 }

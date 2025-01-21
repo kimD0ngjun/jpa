@@ -29,4 +29,12 @@ public class JoinController {
                 .map(e -> "작가 : " + e.getName() + ", 제목들 : " + e.getBook().stream().map(Book::getTitle).toList() + "\n")
                 .toList());
     }
+
+    @GetMapping("/join3")
+    public void test3() {
+        System.out.println(bookRepository.fetchJoin()
+                .stream()
+                .map(e -> "제목 : " + e.getTitle() + ", 작가 : " + e.getAuthor().getName() + "\n")
+                .toList());
+    }
 }
