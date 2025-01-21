@@ -2,6 +2,7 @@ package com.example.jpa.queryDsl.repository.author;
 
 import com.example.jpa.queryDsl.entity.Author;
 import com.example.jpa.queryDsl.entity.QAuthor;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +49,19 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
                                 author.name.contains("1")
                         )
                 )
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> findAuthorByGroup() {
+        QAuthor author = QAuthor.author;
+
+        // 조직 별로 '저자 총 수'와 '저자의 평균 나이' 계산 후, 저자 평균 나이가 10 나온 경우만 반환
+        return queryFactory
+                .select(author.organization.orgName, author.count(), author.age.avg())
+                .from(author)
+                .groupBy(author.organization.id)
+                .having(author.age.avg().gt(10))
                 .fetch();
     }
 }

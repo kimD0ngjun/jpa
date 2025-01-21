@@ -4,6 +4,7 @@ import com.example.jpa.queryDsl.entity.Author;
 import com.example.jpa.queryDsl.entity.Book;
 import com.example.jpa.queryDsl.repository.author.AuthorRepository;
 import com.example.jpa.queryDsl.repository.book.BookRepository;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,4 +29,8 @@ public class TestController {
         return authorRepository.findAuthorByCondition();
     }
 
+    @GetMapping("/3")
+    public void test3() {
+        System.out.println("결과 : " + authorRepository.findAuthorByGroup());
+    }
 }
