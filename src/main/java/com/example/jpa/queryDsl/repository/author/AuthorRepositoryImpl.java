@@ -2,6 +2,7 @@ package com.example.jpa.queryDsl.repository.author;
 
 import com.example.jpa.queryDsl.entity.Author;
 import com.example.jpa.queryDsl.entity.QAuthor;
+import com.example.jpa.queryDsl.entity.QBook;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,17 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
                 .from(author)
                 .groupBy(author.organization.id)
                 .having(author.age.avg().gt(10))
+                .fetch();
+    }
+
+    @Override
+    public List<Author> rightJoin() {
+        QBook book = QBook.book;
+        QAuthor author = QAuthor.author;
+
+        return queryFactory
+                .selectFrom(author)
+                .rightJoin(author.book, book)
                 .fetch();
     }
 }

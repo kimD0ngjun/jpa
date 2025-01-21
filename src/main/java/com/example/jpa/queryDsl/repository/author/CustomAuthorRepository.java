@@ -10,4 +10,7 @@ public interface CustomAuthorRepository {
     List<Author> findAuthorByCondition();
 
     List<Tuple> findAuthorByGroup();
+
+    // 간단한 라이트 조인
+    List<Author> rightJoin();
 }
