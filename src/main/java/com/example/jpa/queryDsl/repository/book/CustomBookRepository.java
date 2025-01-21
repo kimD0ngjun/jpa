@@ -13,5 +13,5 @@ public interface CustomBookRepository {
     List<Book> findBookByPage(int offset, int limit);
 
     // 간단한 조인
-    List<Book> simpleJoin();
+    List<Book> leftJoin();
 }

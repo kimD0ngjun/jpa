@@ -40,14 +40,14 @@ public class BookRepositoryImpl implements CustomBookRepository {
     }
 
     @Override
-    public List<Book> simpleJoin() {
+    public List<Book> leftJoin() {
         QBook book = QBook.book;
         QAuthor author = QAuthor.author;
 
         return queryFactory
                 .selectFrom(book)
                 .leftJoin(book.author, author)
-                .where(author.name.eq("Author 7"))
+//                .where(author.name.eq("Author 7"))
                 .fetch();
     }
 }
