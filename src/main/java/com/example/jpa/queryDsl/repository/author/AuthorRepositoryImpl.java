@@ -26,9 +26,10 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
         author.age.notIn(25, 35, 45); // 미포함
 
         // 문자열
-        author.name.like("J%"); // LIKE : J로 시작
-        author.name.startsWith("J"); // J로 시작
-        author.name.contains("Jo"); // J 포함
+        author.name.like("A%"); // LIKE : A로 시작
+        author.name.startsWith("A"); // J로 시작
+        author.name.contains("1"); // 1 포함
+        author.name.endsWith("7"); // 7로 끝남
 
         // 수 비교
         author.age.between(25, 35); // 25 ~ 35
@@ -39,9 +40,13 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
 
         return queryFactory.selectFrom(author)
                 .where(
-                        author.age.notBetween(20, 30)
+                        (
+                                author.age.notBetween(20, 30)
                                 .and(author.age.gt(10))
                                 .and(author.age.lt(50))
+                        ).or(
+                                author.name.contains("1")
+                        )
                 )
                 .fetch();
     }
