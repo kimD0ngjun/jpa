@@ -11,4 +11,7 @@ public interface CustomBookRepository {
 
     // 페이지네이션
     List<Book> findBookByPage(int offset, int limit);
+
+    // 간단한 조인
+    List<Book> simpleJoin();
 }

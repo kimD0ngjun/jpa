@@ -1,6 +1,7 @@
 package com.example.jpa.queryDsl.repository.book;
 
 import com.example.jpa.queryDsl.entity.Book;
+import com.example.jpa.queryDsl.entity.QAuthor;
 import com.example.jpa.queryDsl.entity.QBook;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,12 +30,24 @@ public class BookRepositoryImpl implements CustomBookRepository {
                 .selectFrom(book)
                 .offset(offset)
                 .limit(limit)
-                .fetchResults(); // 페이지네이션 정보까지 같이 조회
+                .fetchResults(); // 페이지네이션 정보까지 같이 조회(근데 deprecated..? 5.1 버전 확인 필요)
 
         System.out.println("Total : " + res.getTotal());
         System.out.println("Limit : " + res.getLimit());
         System.out.println("Offset : " + res.getOffset());
 
         return res.getResults();
+    }
+
+    @Override
+    public List<Book> simpleJoin() {
+        QBook book = QBook.book;
+        QAuthor author = QAuthor.author;
+
+        return queryFactory
+                .selectFrom(book)
+                .leftJoin(book.author, author)
+                .where(author.name.eq("Author 7"))
+                .fetch();
     }
 }
