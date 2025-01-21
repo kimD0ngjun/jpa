@@ -33,4 +33,9 @@ public class TestController {
     public void test3() {
         System.out.println("결과 : " + authorRepository.findAuthorByGroup());
     }
+
+    @GetMapping("/4")
+    public void test4() {
+        System.out.println("결과 : " + bookRepository.findBookByPage(1, 3).stream().map(Book::getTitle).toList());
+    }
 }
