@@ -4,6 +4,7 @@ import com.example.jpa.queryDsl.entity.Author;
 import com.example.jpa.queryDsl.entity.QAuthor;
 import com.example.jpa.queryDsl.entity.QBook;
 import com.querydsl.core.Tuple;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -75,5 +76,20 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
                 .selectFrom(author)
                 .rightJoin(author.book, book)
                 .fetch();
+    }
+
+    @Override
+    public Author simpleSubquery() {
+        QAuthor author = QAuthor.author;
+        QAuthor subAuthor = new QAuthor("subAuthor");
+
+        return queryFactory
+                .selectFrom(author)
+                .where(author.age.eq(
+                        JPAExpressions
+                                .select(subAuthor.age.max())
+                                .from(subAuthor)
+                ))
+                .fetchFirst();
     }
 }

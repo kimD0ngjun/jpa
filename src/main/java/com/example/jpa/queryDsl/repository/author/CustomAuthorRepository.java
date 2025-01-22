@@ -13,4 +13,7 @@ public interface CustomAuthorRepository {
 
     // 간단한 라이트 조인
     List<Author> rightJoin();
+
+    // 간단한 서브쿼리 예시
+    Author simpleSubquery();
 }
