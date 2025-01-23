@@ -1,5 +1,6 @@
 package com.example.jpa.queryDsl.repository.author;
 
+import com.example.jpa.queryDsl.dto.AuthorDTO;
 import com.example.jpa.queryDsl.entity.Author;
 import com.example.jpa.queryDsl.entity.QAuthor;
 import com.example.jpa.queryDsl.entity.QBook;
@@ -7,6 +8,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class AuthorRepositoryImpl implements CustomAuthorRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<Author> findAuthorByCondition() {
@@ -125,5 +128,21 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
                                 .from(subAuthor))
                 .from(author)
                 .fetch();
+    }
+
+    @Override
+    public List<AuthorDTO> modelMapperJoin() {
+        QAuthor author = QAuthor.author;
+        QBook book = QBook.book;
+
+        List<Author> results = queryFactory
+                .select(author)
+                .from(author)
+                .join(author.book, book)
+                .fetch();
+
+        return results.stream()
+                .map(e -> modelMapper.map(e, AuthorDTO.class))
+                .toList();
     }
 }
