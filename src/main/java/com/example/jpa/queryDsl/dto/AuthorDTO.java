@@ -14,4 +14,5 @@ public class AuthorDTO {
     private String gender;
     private Integer age;
     private List<BookDTO> book = new ArrayList<>();
+    private OrganizationDTO organization;
 }
