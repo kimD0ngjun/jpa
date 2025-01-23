@@ -16,4 +16,10 @@ public interface CustomAuthorRepository {
 
     // 간단한 서브쿼리 예시
     Author simpleSubquery();
+
+    // Where + 서브쿼리
+    Author whereSubquery();
+
+    // Select * 서브쿼리
+    List<Tuple> selectSubquery();
 }

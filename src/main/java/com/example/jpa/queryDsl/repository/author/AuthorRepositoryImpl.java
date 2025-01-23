@@ -83,6 +83,9 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
         QAuthor author = QAuthor.author;
         QAuthor subAuthor = new QAuthor("subAuthor");
 
+        // 별칭을 쓰는 이유 : 독립적인 별개의 쿼리 때문에
+        // JPAExpressions : 서브쿼리용 불변 클래스
+
         return queryFactory
                 .selectFrom(author)
                 .where(author.age.eq(
@@ -91,5 +94,36 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
                                 .from(subAuthor)
                 ))
                 .fetchFirst();
+    }
+
+    @Override
+    public Author whereSubquery() {
+        QAuthor author = QAuthor.author;
+        QAuthor subAuthor = new QAuthor("subAuthor");
+        QBook book = QBook.book;
+
+        return queryFactory
+                .selectFrom(author)
+                .where(author.book.size().goe(
+                        JPAExpressions
+                                .select(subAuthor.book.size().avg())
+                                .from(subAuthor)
+                                .innerJoin(subAuthor.book, book)
+                ))
+                .fetchFirst();
+    }
+
+    @Override
+    public List<Tuple> selectSubquery() {
+        QAuthor author = QAuthor.author;
+        QAuthor subAuthor = new QAuthor("subAuthor");
+
+        return queryFactory
+                .select(author.name,
+                        JPAExpressions
+                                .select(subAuthor.age.avg())
+                                .from(subAuthor))
+                .from(author)
+                .fetch();
     }
 }
