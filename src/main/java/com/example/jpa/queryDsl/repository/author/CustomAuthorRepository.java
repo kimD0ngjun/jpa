@@ -1,6 +1,7 @@
 package com.example.jpa.queryDsl.repository.author;
 
 import com.example.jpa.queryDsl.dto.AuthorDTO;
+import com.example.jpa.queryDsl.dto.AuthorWithOrganizationDTO;
 import com.example.jpa.queryDsl.entity.Author;
 import com.querydsl.core.Tuple;
 
@@ -32,4 +33,7 @@ public interface CustomAuthorRepository {
 
     // ModelMapper 테스트
     List<AuthorDTO> modelMapperJoin();
+
+    // QueryProjection 어노테이션
+    List<AuthorWithOrganizationDTO> projectionJoin();
 }

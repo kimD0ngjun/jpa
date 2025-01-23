@@ -1,10 +1,15 @@
 package com.example.jpa.queryDsl.repository.author;
 
 import com.example.jpa.queryDsl.dto.AuthorDTO;
+import com.example.jpa.queryDsl.dto.AuthorWithOrganizationDTO;
+import com.example.jpa.queryDsl.dto.OrganizationDTO;
 import com.example.jpa.queryDsl.entity.Author;
 import com.example.jpa.queryDsl.entity.QAuthor;
 import com.example.jpa.queryDsl.entity.QBook;
+import com.example.jpa.queryDsl.entity.QOrganization;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -146,5 +151,27 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
         return results.stream()
                 .map(e -> modelMapper.map(e, AuthorDTO.class))
                 .toList();
+    }
+
+    @Override
+    public List<AuthorWithOrganizationDTO> projectionJoin() {
+        QAuthor author = QAuthor.author;
+        QOrganization organization = QOrganization.organization;
+
+        return queryFactory
+                .select(Projections.fields(AuthorWithOrganizationDTO.class,
+                        author.id,
+                        author.name,
+                        author.age,
+                        author.gender,
+                        Projections.fields(
+                                OrganizationDTO.class,
+                                ExpressionUtils.as(organization.id, "id"),
+                                ExpressionUtils.as(organization.orgName, "orgName")
+                        ).as("organization")
+                ))
+                .from(author)
+                .leftJoin(author.organization, organization)
+                .fetch();
     }
 }
