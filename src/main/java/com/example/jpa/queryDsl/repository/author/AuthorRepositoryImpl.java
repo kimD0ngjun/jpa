@@ -141,6 +141,8 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
                 .join(author.book, book)
                 .fetch();
 
+        System.out.println("결과 : " + results);
+
         return results.stream()
                 .map(e -> modelMapper.map(e, AuthorDTO.class))
                 .toList();
