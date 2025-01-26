@@ -36,12 +36,12 @@ public class SubqueryController {
     @GetMapping("/sub3")
     public List<DynamicDTOMap> selectSubquery() {
         List<Tuple> author = authorRepository.selectSubquery();
-        return author.stream().map(dynamicDTOFactory::createDto).toList();
+        return author.stream().map(dynamicDTOFactory::createDTOMap).toList();
     }
 
     @GetMapping("/sub4")
     public List<DynamicDTOMap> caseSubquery() {
         List<Tuple> author = authorRepository.caseSubquery();
-        return author.stream().map(dynamicDTOFactory::createDto).toList();
+        return author.stream().map(dynamicDTOFactory::createDTOMap).toList();
     }
 }

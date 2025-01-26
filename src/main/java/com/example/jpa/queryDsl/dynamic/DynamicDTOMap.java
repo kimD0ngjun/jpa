@@ -6,14 +6,14 @@ import java.util.*;
 
 @Getter
 public class DynamicDTOMap {
-    private final Map<String, Object> fieldMap;
+    private final Map<String, Object> fieldMapElement;
 
     public DynamicDTOMap() {
-        this.fieldMap = new LinkedHashMap<>();
+        this.fieldMapElement = new LinkedHashMap<>();
     }
 
     public void setDTOField(String fieldName, Object value) {
-        fieldMap.put(fieldName, value);
+        fieldMapElement.put(fieldName, value);
     }
 }
 

@@ -7,14 +7,13 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 @Component
 public class DynamicDTOFactory {
 
     // DTO 캐시
     private final Map<String, DynamicDTOMap> dtoCache = new HashMap<>();
 
-    public DynamicDTOMap getDtoFromCacheOrCreate(Tuple tuple) {
+    public DynamicDTOMap createDTOMap(Tuple tuple) {
         // 튜플로부터 캐시 키 얻음
         String cacheKey = createCacheKey(tuple);
 
@@ -24,8 +23,23 @@ public class DynamicDTOFactory {
         }
 
         // 캐시 없을 경우
-        DynamicDTOMap dto = createDto(tuple);
+        DynamicDTOMap dto = createDTOMapField(tuple);
         dtoCache.put(cacheKey, dto);
+
+        return dto;
+    }
+
+    // 동적 DTO 생성
+    public DynamicDTOMap createDTOMapField(Tuple tuple) {
+        DynamicDTOMap dto = new DynamicDTOMap();
+
+        // 튜플 순회하며 필드명, 타입 체킹
+        for (int i = 0; i < tuple.size(); i++) {
+            String fieldName = "field" + i;
+            Object value = tuple.get(i, Object.class);
+
+            dto.setDTOField(fieldName, value);
+        }
 
         return dto;
     }
@@ -43,19 +57,5 @@ public class DynamicDTOFactory {
         return keyBuilder.toString();
     }
 
-    // 동적 DTO 생성
-    public DynamicDTOMap createDto(Tuple tuple) {
-        DynamicDTOMap dto = new DynamicDTOMap();
-
-        // 튜플 순회하며 필드명, 타입 체킹
-        for (int i = 0; i < tuple.size(); i++) {
-            String fieldName = "field" + i;
-            Object value = tuple.get(i, Object.class);
-
-            dto.setDTOField(fieldName, value);
-        }
-
-        return dto;
-    }
 
 }

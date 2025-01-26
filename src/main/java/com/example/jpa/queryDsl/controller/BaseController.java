@@ -35,7 +35,7 @@ public class BaseController {
     @GetMapping("/3")
     public List<DynamicDTOMap> test3() {
         List<Tuple> tuples = authorRepository.findAuthorByGroup();
-        return tuples.stream().map(dynamicDTOFactory::createDto).toList();
+        return tuples.stream().map(dynamicDTOFactory::createDTOMap).toList();
     }
 
     @GetMapping("/4")
