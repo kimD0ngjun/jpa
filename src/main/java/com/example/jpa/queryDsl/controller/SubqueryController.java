@@ -1,5 +1,7 @@
 package com.example.jpa.queryDsl.controller;
 
+import com.example.jpa.queryDsl.dynamic.DynamicDTO;
+import com.example.jpa.queryDsl.dynamic.DynamicDTOFactory;
 import com.example.jpa.queryDsl.entity.Author;
 import com.example.jpa.queryDsl.entity.Book;
 import com.example.jpa.queryDsl.repository.author.AuthorRepository;
@@ -14,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubqueryController {
 
+    private final DynamicDTOFactory dynamicDTOFactory;
     private final AuthorRepository authorRepository;
 
     @GetMapping("/sub1")
@@ -31,14 +34,14 @@ public class SubqueryController {
     }
 
     @GetMapping("/sub3")
-    public void selectSubquery() {
+    public List<DynamicDTO> selectSubquery() {
         List<Tuple> author = authorRepository.selectSubquery();
-        author.forEach(System.out::println);
+        return author.stream().map(dynamicDTOFactory::createDto).toList();
     }
 
     @GetMapping("/sub4")
-    public void caseSubquery() {
+    public List<DynamicDTO> caseSubquery() {
         List<Tuple> author = authorRepository.caseSubquery();
-        author.forEach(System.out::println);
+        return author.stream().map(dynamicDTOFactory::createDto).toList();
     }
 }

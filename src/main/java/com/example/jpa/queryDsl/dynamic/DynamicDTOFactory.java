@@ -2,11 +2,13 @@ package com.example.jpa.queryDsl.dynamic;
 
 import com.querydsl.core.Tuple;
 import lombok.Getter;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
+@Component
 public class DynamicDTOFactory {
 
     // DTO 캐시

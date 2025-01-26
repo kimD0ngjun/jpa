@@ -1,9 +1,12 @@
 package com.example.jpa.queryDsl.controller;
 
+import com.example.jpa.queryDsl.dynamic.DynamicDTO;
+import com.example.jpa.queryDsl.dynamic.DynamicDTOFactory;
 import com.example.jpa.queryDsl.entity.Author;
 import com.example.jpa.queryDsl.entity.Book;
 import com.example.jpa.queryDsl.repository.author.AuthorRepository;
 import com.example.jpa.queryDsl.repository.book.BookRepository;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +20,7 @@ public class BaseController {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
+    private final DynamicDTOFactory dynamicDTOFactory;
 
     @GetMapping("/1/{title}")
     public Book test1(@PathVariable(value = "title") String title) {
@@ -29,8 +33,9 @@ public class BaseController {
     }
 
     @GetMapping("/3")
-    public void test3() {
-        System.out.println("결과 : " + authorRepository.findAuthorByGroup());
+    public List<DynamicDTO> test3() {
+        List<Tuple> tuples = authorRepository.findAuthorByGroup();
+        return tuples.stream().map(dynamicDTOFactory::createDto).toList();
     }
 
     @GetMapping("/4")
