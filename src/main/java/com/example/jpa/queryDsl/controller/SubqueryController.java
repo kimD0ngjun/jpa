@@ -35,4 +35,10 @@ public class SubqueryController {
         List<Tuple> author = authorRepository.selectSubquery();
         author.forEach(System.out::println);
     }
+
+    @GetMapping("/sub4")
+    public void caseSubquery() {
+        List<Tuple> author = authorRepository.caseSubquery();
+        author.forEach(System.out::println);
+    }
 }

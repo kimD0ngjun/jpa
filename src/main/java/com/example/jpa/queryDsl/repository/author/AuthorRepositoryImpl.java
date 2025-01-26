@@ -127,20 +127,35 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
         QAuthor author = QAuthor.author;
         QAuthor subAuthor = new QAuthor("subAuthor");
 
-        return queryFactory
+        List<Tuple> tuples = queryFactory
                 .select(author.name,
                         JPAExpressions
                                 .select(subAuthor.age.avg())
                                 .from(subAuthor))
                 .from(author)
                 .fetch();
+
+        Tuple tuple = tuples.getFirst();
+
+        for (int i = 0; i < tuple.size(); i++) {
+            Object value = tuple.get(i, Object.class);
+
+            if (value != null) {
+                System.out.println(
+                        "Index " + i + ": Value = " + value + ", Type = " + value.getClass().getName());
+            } else {
+                System.out.println("Index " + i + ": Value = null");
+            }
+        }
+
+        return tuples;
     }
 
     @Override
     public List<Tuple> caseSubquery() {
         QAuthor author = QAuthor.author;
 
-        return queryFactory
+        List<Tuple> tuples = queryFactory
                 .select(author.name,
                         author.gender
                                 .when("M").then("man")
@@ -151,6 +166,21 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
                 )
                 .from(author)
                 .fetch();
+
+        Tuple tuple = tuples.getFirst();
+
+        for (int i = 0; i < tuple.size(); i++) {
+            Object value = tuple.get(i, Object.class);
+
+            if (value != null) {
+                System.out.println(
+                        "Index " + i + ": Value = " + value + ", Type = " + value.getClass().getName());
+            } else {
+                System.out.println("Index " + i + ": Value = null");
+            }
+        }
+
+        return tuples;
     }
 
     @Override
