@@ -68,12 +68,27 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
         QAuthor author = QAuthor.author;
 
         // 조직 별로 '저자 총 수'와 '저자의 평균 나이' 계산 후, 저자 평균 나이가 10 나온 경우만 반환
-        return queryFactory
+        List<Tuple> tuples = queryFactory
                 .select(author.organization.orgName, author.count(), author.age.avg())
                 .from(author)
                 .groupBy(author.organization.id)
                 .having(author.age.avg().gt(10))
                 .fetch();
+
+        Tuple tuple = tuples.getFirst();
+
+        for (int i = 0; i < tuple.size(); i++) {
+            Object value = tuple.get(i, Object.class);
+
+            if (value != null) {
+                System.out.println(
+                        "Index " + i + ": Value = " + value + ", Type = " + value.getClass().getName());
+            } else {
+                System.out.println("Index " + i + ": Value = null");
+            }
+        }
+
+        return tuples;
     }
 
     @Override
