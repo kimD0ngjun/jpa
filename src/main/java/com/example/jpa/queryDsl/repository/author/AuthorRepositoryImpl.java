@@ -10,6 +10,7 @@ import com.example.jpa.queryDsl.entity.QOrganization;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -131,6 +132,23 @@ public class AuthorRepositoryImpl implements CustomAuthorRepository {
                         JPAExpressions
                                 .select(subAuthor.age.avg())
                                 .from(subAuthor))
+                .from(author)
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> caseSubquery() {
+        QAuthor author = QAuthor.author;
+
+        return queryFactory
+                .select(author.name,
+                        author.gender
+                                .when("M").then("man")
+                                .otherwise("no man"),
+                        new CaseBuilder()
+                                .when(author.age.between(25, 32)).then("junior")
+                                .otherwise("senior")
+                )
                 .from(author)
                 .fetch();
     }

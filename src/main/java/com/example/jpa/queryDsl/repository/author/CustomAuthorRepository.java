@@ -25,6 +25,9 @@ public interface CustomAuthorRepository {
     // Select * 서브쿼리
     List<Tuple> selectSubquery();
 
+    // Case 활용한 서브쿼리
+    List<Tuple> caseSubquery();
+
     /**
      * From + 서브쿼리는 불가능하다
      * JPA 표준에서 하위 쿼리의 FROM 절에서는 엔터티나 엔터티 경로만 사용할 수 있으며 서브쿼리를 지원하지 않는다.
