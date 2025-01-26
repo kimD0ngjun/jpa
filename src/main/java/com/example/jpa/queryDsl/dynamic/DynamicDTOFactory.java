@@ -12,9 +12,9 @@ import java.util.Map;
 public class DynamicDTOFactory {
 
     // DTO 캐시
-    private final Map<String, DynamicDTO> dtoCache = new HashMap<>();
+    private final Map<String, DynamicDTOMap> dtoCache = new HashMap<>();
 
-    public DynamicDTO getDtoFromCacheOrCreate(Tuple tuple) {
+    public DynamicDTOMap getDtoFromCacheOrCreate(Tuple tuple) {
         // 튜플로부터 캐시 키 얻음
         String cacheKey = createCacheKey(tuple);
 
@@ -24,7 +24,7 @@ public class DynamicDTOFactory {
         }
 
         // 캐시 없을 경우
-        DynamicDTO dto = createDto(tuple);
+        DynamicDTOMap dto = createDto(tuple);
         dtoCache.put(cacheKey, dto);
 
         return dto;
@@ -44,8 +44,8 @@ public class DynamicDTOFactory {
     }
 
     // 동적 DTO 생성
-    public DynamicDTO createDto(Tuple tuple) {
-        DynamicDTO dto = new DynamicDTO();
+    public DynamicDTOMap createDto(Tuple tuple) {
+        DynamicDTOMap dto = new DynamicDTOMap();
 
         // 튜플 순회하며 필드명, 타입 체킹
         for (int i = 0; i < tuple.size(); i++) {

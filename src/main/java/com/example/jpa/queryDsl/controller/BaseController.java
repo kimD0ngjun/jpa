@@ -1,6 +1,6 @@
 package com.example.jpa.queryDsl.controller;
 
-import com.example.jpa.queryDsl.dynamic.DynamicDTO;
+import com.example.jpa.queryDsl.dynamic.DynamicDTOMap;
 import com.example.jpa.queryDsl.dynamic.DynamicDTOFactory;
 import com.example.jpa.queryDsl.entity.Author;
 import com.example.jpa.queryDsl.entity.Book;
@@ -33,7 +33,7 @@ public class BaseController {
     }
 
     @GetMapping("/3")
-    public List<DynamicDTO> test3() {
+    public List<DynamicDTOMap> test3() {
         List<Tuple> tuples = authorRepository.findAuthorByGroup();
         return tuples.stream().map(dynamicDTOFactory::createDto).toList();
     }
