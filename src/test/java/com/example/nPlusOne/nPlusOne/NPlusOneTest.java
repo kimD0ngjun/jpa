@@ -1,8 +1,8 @@
 package com.example.nPlusOne.nPlusOne;
 
-import com.example.nPlusOne.service.AService;
-import com.example.nPlusOne.service.OneService;
-import com.example.nPlusOne.service.TeamMemberService;
+import com.example.jpa.nPlusOne.service.AService;
+import com.example.jpa.nPlusOne.service.OneService;
+import com.example.jpa.nPlusOne.service.TeamMemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
